@@ -1,5 +1,7 @@
 # <i>CK Bunker</i>
 
+![](https://github.com/Coldcard/ck-bunker/blob/master/static/screen-shot.jpg)
+
 Vist [Github repo for CK-Bunker](https://github.com/Coldcard/ck-bunker).
 
 ## What is the Coinkite Bunker?
