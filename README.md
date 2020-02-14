@@ -6,6 +6,8 @@ Vist [Github repo for CK-Bunker](https://github.com/Coldcard/ck-bunker).
 
 ## What is the Coinkite Bunker?
 
+"Basically the cost of a Bitcoin HSM with custom policies is now the cost of a coldcard and you don't need a thirty party to maintain it." - Francis P.
+
 It's a python program that you run on a computer attached to a
 Coldcard. It will setup and operate the Coldcard in "HSM Mode" where
 it signs without a human pressing the OK key.  To keep your
