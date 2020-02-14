@@ -1,0 +1,14 @@
+ENV
+.DS_Store
+
+*.log
+*.swp
+
+__pycache__/
+*.pyc
+
+.tags
+pp
+history.yaml
+
+bunker.egg-info/

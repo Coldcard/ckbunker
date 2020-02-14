@@ -1,0 +1,50 @@
+{# implement a "vue component" for individual HSM rules
+
+limitation:
+  - dropdown's do not track changes to the data, but the other direction (user makes choice)
+    does get into the vue data model
+  - other controls are bi-directional
+#}
+
+<script type="x-template" id="hsm-rule-template">
+{% include "setup/hsm-rule.html" %}
+</script>
+
+<script>
+
+Vue.component('hsmrule', {
+    template: "#hsm-rule-template",
+	props: ['rule', 'user_list', 'wallet_list', 'chain', 'no_period'],
+	watch: {
+/*
+      'rule.users': function(new_val, old_val) {
+          // enforce consistency stuff
+          let cnt = new_val.length;
+          console.log('changed', new_val, "cnt", cnt);
+          if(!cnt) {
+              this.rule.min_users = 0;
+          } else {
+              this.rule.min_users = 'all';
+          }
+          $(this.$el).dropdown('set selected', new_val);
+      },
+*/
+	},
+    methods: {
+      select_fixit: function(fldname, evt) {
+          // LIKE THIS: this.rule.users = val;
+          let val = $(evt.target).val();
+          eval('this.' + fldname + ' = val');
+      },
+    },
+	mounted() {
+		console.log('init an hsm rule');
+        /* not using this, seee select_fixit() instead 
+          $(this.$el).dropdown('refresh').dropdown({onChange: function (value, text, $choice) {
+              t.$emit('input', value);
+          }});
+        */
+	}
+});
+</script>
+

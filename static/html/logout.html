@@ -1,0 +1,18 @@
+<html>
+<head>
+<title>Logged Out</title>
+<body>
+<pre style="margin: 50px;">
+You are logged out.
+
+
+In 3 seconds this tab will clear itself... But you should still close it.
+</pre>
+<script>
+setTimeout(function() {
+    history.replaceState(null, '', '/');
+    window.location.replace('about:blank');
+    window.location = 'about:blank';
+}, 3000);
+</script>
+

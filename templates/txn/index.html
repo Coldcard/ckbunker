@@ -1,0 +1,380 @@
+{% extends "navpage.html" %}
+{% from "macros.html" import needs_coldcard_message, subhead, bool_choice, info_hover, info_hover_long %}
+
+{% macro status_value(hdr) %}
+    <tr><th>{{hdr}}
+        <td>
+          {{ caller() }}
+        </td>
+    </tr>
+{% endmacro %}
+
+{% block main_body %}
+<div class="ui" id="transaction" v-cloak>
+
+<div v-if="!STATUS.hsm.active && STATUS.connected" class="ui icon negative message" v-cloak>
+  <i class="ban icon"></i>
+  <div class="content">
+    <div class="header">
+      HSM Not Enabled
+    </div>
+    <p>
+        The Coldcard is not in HSM mode. 
+        Typically, you should enable a <a href="/setup">spending policy</a> before using this page,
+        but it is possible to upload and sign PSBT files as it is now. You will need to
+        approve each transaction on the Coldcard's screen.
+    </p>
+  </div>
+</div>
+
+{{ needs_coldcard_message() }}
+
+<div class="ui grid" v-if="STATUS.connected">
+
+  <div class="sixteen wide column">
+
+    <table class="ui celled compact inverted blue table">
+      <thead>
+        <tr>
+          <th class="four wide center aligned" data-tooltip="Number of requests approved">
+            Approvals
+          </th>
+          <th class="four wide center aligned" data-tooltip="Number of requests refused so far">
+            Refusals
+          </th>
+          <th class="four wide center aligned" :data-tooltip="STATUS.hsm.period | period_cleanup">
+            Period Ends
+          </th>
+          <th class="four wide center aligned" data-tooltip="Total Spent in current period">
+            Amount Spent 
+          </th>
+      <tbody>
+{% raw %}
+        <tr>
+          <td class="center aligned">
+            <span class="bignum">{{ STATUS.hsm.approvals || 0 }}</span>
+          </td>
+          <td class="center aligned" :data-tooltip="'Last problem: ' + STATUS.hsm.last_refusal">
+            <span class="bignum">{{ STATUS.hsm.refusals  || 0}}</span>
+          </td>
+          <td class="center aligned">
+            <span v-if="abs_period_ends" :data-livestamp="abs_period_ends"></span>
+            <span class="" v-else>&mdash;</span>
+          </td>
+          <td class="center aligned">
+            <span class="">{{ total_spent || '&mdash;' }}</span>
+{% endraw %}
+            {% call info_hover_long('bottom right') %}
+              {% raw %}
+              <p v-if="!STATUS.hsm.has_spent">
+                  No amounts spent in current period.
+              </p>
+              <table class="ui small compact celled striped table" style="width: 15em;"
+                  v-if="STATUS.hsm.has_spent && STATUS.hsm.has_spent.length">
+                <thead>
+                  <tr><td class="one wide center aligned"><b>Rule</b>
+                      <td class="five wide right aligned"><b>Amount Spent</b>
+                <tbody>
+                  <tr v-for="(amt, idx) in STATUS.hsm.has_spent">
+                    <td class="center aligned">#{{idx+1}}
+                    <td class="right aligned"><span class='btcnum'>{{ amt | btc_value }}</span>
+                  </tr>
+              </table>
+              {% endraw %}
+            {% endcall %}
+          </td>
+        </tr>
+    </table>
+
+  </div>
+</div>
+
+<h2>Transaction Signing</h2>
+
+<div class="ui grid celled form">
+
+  <div class="eight wide column">
+    <div class="ui field" v-if="!STATUS.psbt_size" style="margin-top: 1em">
+      <input type="file" @change="upload_psbt($event)" class="inputfile" id="embedpollfileinput"
+          accept="text/plain,.txt,.psbt" />
+      <label for="embedpollfileinput" class="ui fluid huge primary icon button"
+            style="font-size: 1.4rem !important; line-height: 3.4rem; color: white;">
+        <i class="ui upload icon"></i> 
+        Upload PSBT to Bunker
+      </label>
+    </div>
+    <div v-if="STATUS.psbt_size" class="ui segment">
+{% raw %}
+        <div class="ui top attached large label">PSBT File</div>
+        <button class="ui red top right attached large label" @click="clear_psbt_btn()"
+            data-tooltip="Forget PSBT file">
+          <i class="trash icon" style="margin: 0;"></i>
+        </button>
+        <p style="margin-top: 3.75em">
+        {{STATUS.psbt_size }} bytes, with
+        SHA256: <code class='sha256'>{{STATUS.psbt_hash.substr(0, 6) }}&ctdot;{{STATUS.psbt_hash.substr(64-6) }}</code>
+        </p>
+        
+{% endraw %}
+
+    <div class="ui horizontal divider" style="padding-top: .8em">
+        Transaction Preview
+    </div>
+    
+
+    {% raw %}
+      <template v-if="!STATUS.psbt_preview && STATUS.psbt_size">
+        <button class="ui large basic blue icon button" @click="preview_psbt_btn()"
+              style="float: right;"
+              data-tooltip="Send transaction to Coldcard for preview">
+          <i class="search icon"></i> Display
+        </button>
+      </template>
+      <template v-if="STATUS.psbt_preview && STATUS.psbt_size">
+        <button class="ui basic mini blue icon button" @click="preview_psbt_btn()"
+              style="float: right;"
+              data-tooltip="Preview transaction again">
+          <i class="refresh icon"></i>
+        </button>
+      </template>
+      <pre v-if="STATUS.psbt_preview" class="wordwrap">{{STATUS.psbt_preview }}</pre>
+      <template v-if="!STATUS.psbt_preview && STATUS.psbt_size">
+        <p>The Coldcard can preview the transaction and what it will do if
+              approved, signed and broadcast. The HSM policy is not considered.
+        </p>
+      </template>
+    {% endraw %}
+
+    </div>
+
+  <template v-if="STATUS.psbt_size && STATUS.connected">
+
+    {% call bool_choice('send_immediately', None) %}
+        <label>Broadcast transaction immediately
+          {{ info_hover("Discretely broadcast using Blockstream's API over Tor") }}
+        </label>
+    {% endcall %}
+    {{ bool_choice('finalize', "Finalize transaction", disabled_if="send_immediately") }}
+    {% call bool_choice('wants_download', None, readonly_if="!send_immediately") %}
+{% raw %}
+        <label>
+            Download {{finalize?'transaction (hex in text file)':'signed PSBT file'}}
+        </label>
+{% endraw %}
+    {% endcall %}
+
+{% raw %}
+    <div class="ui field">
+      <button class="ui huge fluid icon primary button"
+        :class="{disabled: !STATUS.psbt_size || !STATUS.connected, loading:STATUS.busy_signing}"
+        @click="submit_btn()">
+        <i class="check edit outline icon"></i> 
+        <span v-if="!send_immediately">Sign Transaction</span>
+        <span v-if="send_immediately">Sign and Broadcast Transaction</span>
+      </button>
+{% endraw %}
+    </div>
+</template>
+  </div>
+
+  <div class="eight wide column">
+    <table class="ui compact small very basic table">
+      <thead>
+        <tr><th class="eight wide right aligned">Authorizing User
+            <th class="eight wide">One-Time Code or Password
+            {% call info_hover_long('top center') %}
+              Depending on your spending policy rules, all or none of these users may be
+              required to authorize spending. Leave blank those you are not using.
+            {% endcall %}
+      <tbody>
+      {% raw %}
+        <tr v-if="needs_local">
+            <th class="right aligned">Local Code
+            <td>
+                <tt v-if="STATUS.local_code">{{STATUS.local_code}}</tt>
+                <span v-else="STATUS.local_code">TBD &mdash; need PSBT first</span>
+{% endraw %}
+                {% call info_hover_long('top center') %}
+                  When required, the local Coldcard operator should enter this 6-digit code,
+                  <em>before you press</em> the button on this page.
+                {% endcall %}
+{% raw %}
+        </tr>
+        <tr v-for="(pa, index) in STATUS.pending_auth">
+            <td v-if="pa.name" class="right aligned"><tt>{{pa.name}}<tt>
+            </td>
+            <td v-else class="right aligned">
+              <input type="text" placeholder="username"
+                  class="width-fix"
+                  maxlength=16 @change="set_auth_user(index, $event)">
+            </td>
+            <td>
+              <form>
+              <div class="ui action input">
+                <input type="password" placeholder="6-digits / password"
+                    class="width-fix"
+                    autocomplete="off" :value="pa.has_guess"
+                        @change="set_auth_pw(index, $event)">
+                <button class="ui icon button" 
+                        @click.prevent="clear_auth_pw(index)">
+                    <i class="close icon"></i>
+                </button>
+              </div>
+              </form>
+            </td>
+        </tr>
+        <tr v-if="!STATUS.pending_auth.length" colspan=2><td><em>No user authorization needed.</em>
+        </tr>
+      {% endraw %}
+    </table>
+  </div>
+</div>
+
+
+
+<div class="ui grid celled">
+  <div class="sixteen wide column">
+
+    {{ subhead('Coldcard HSM Policy Summary') }}
+
+    {% if policy_summary %}
+      <p>
+        For your reference, here is the Coldcard's interpretation of
+        the HSM policy when it was approved and installed.
+      </p>
+
+      <pre class="wordwrap">{{- policy_summary -}}</pre>
+    {% else %}
+      <p>Not available. You have chosen privacy over user-experience.</p>
+    {% endif %}
+  </div>
+</div>
+
+ 
+</div>
+{% endblock main_body %}
+
+{% block endscript %}
+<script>
+async function sha256(bin) {
+    // from <https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest>
+    const hashBuffer = await crypto.subtle.digest('SHA-256', bin);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    // convert bytes to hex string
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function SAT2BTC(n) {
+    var coins = n / 1E8;
+    if(Number.isInteger(coins)) {
+        return coins + ' BTC';
+    }
+    return coins.toFixed(8).replace(/0*$/, '') + ' BTC';
+}
+
+window.transaction = new Vue({
+  el: '#transaction',
+  data: {
+    STATUS: {{ STATUS|tojson }},
+    finalize: true,
+    send_immediately: false,
+    wants_download: true,
+    last_error: null,
+    needs_local: {{ needs_local|tojson }},
+    abs_period_ends: null,
+    total_spent: null,
+  },
+  watch: {
+    send_immediately: function(nv,ov) {
+        this.finalize = nv;
+        if(!nv) this.wants_download = true;
+    },
+    'STATUS.hsm': function(nv,ov) {
+        var ts = (new Date()).getTime() / 1000;
+
+        if(nv.period_ends) {
+          this.abs_period_ends = ts + nv.period_ends;
+        } else { 
+          this.abs_period_ends = null;
+        }
+
+        var v = _.sum(this.STATUS.hsm.has_spent);
+        this.total_spent = v ? SAT2BTC(v) : null;
+    },
+  },
+  methods: {
+    submit_btn: function() {
+        window.WEBSOCKET('submit_psbt', this.STATUS.psbt_hash, this.send_immediately,
+                                            this.finalize, this.wants_download);
+    },
+    clear_psbt_btn: function() {
+        window.WEBSOCKET('clear_psbt');
+    },
+    preview_psbt_btn: function() {
+        window.WEBSOCKET('preview_psbt');
+    },
+    upload_psbt: function(evt) {
+        // package up bytes and send
+        var file = evt.target.files[0];
+        var reader = new FileReader();
+
+        reader.onload = function(){
+          var bin = reader.result;
+
+          $(evt.target).val('');          // bugfix: so works 2nd time, same file.
+
+          sha256(bin).then(function(d) {
+            window.WEBSOCKET('upload_psbt', bin.byteLength, d,
+                                  base64js.fromByteArray(new Uint8Array(bin)));
+          });
+        }
+
+        reader.readAsArrayBuffer(file);
+    },
+    clear_auth_pw: function(idx) {
+        window.WEBSOCKET('auth_offer_guess', idx, 0, '');
+        if(!this.STATUS.pending_auth[idx].has_name) {
+          window.WEBSOCKET('auth_set_name', idx, '');
+        }
+    },
+    set_auth_user: function(idx, evt) {
+        var name = $(evt.target).val();
+        window.WEBSOCKET('auth_set_name', idx, name);
+    },
+    set_auth_pw: function(idx, evt) {
+        // ideally, if it is a password, the HMAC/hashing, would be done local to browser here
+        var tar = $(evt.target);
+        var guess = tar.val();
+        var ts = Math.round((new Date()).getTime() / (30*1000));
+
+        window.WEBSOCKET('auth_offer_guess', idx, ts, guess);
+    },
+  },
+
+  filters: {
+    btc_value: function(n) {
+        return SAT2BTC(n);
+    },
+    period_cleanup: function(mins) {
+        if(!mins) return 'No velocity period configured'
+        return 'Velocity period is ' + mins + ' minutes';
+    },
+  },
+  mounted: function() {
+    // results come back thru here
+    window.vue_app_cb = function(resp) {
+        var self = window.transaction;
+
+        if(resp.update_status) {
+            self.STATUS = resp.update_status;
+        }
+    };
+  },
+})
+</script>
+{% endblock %}
+
+{% block extra_head_code %}
+<script src="/static/ext/moment.min.js"></script>
+<script src="/static/ext/livestamp.min.js"></script>
+{% endblock extra_head_code %}

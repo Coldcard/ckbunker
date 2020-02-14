@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html><head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="robots" content="noindex,nosnippet,noarchive">
+
+  <title>
+    {% block page_title %}
+      CK Bunker
+    {% endblock page_title %}
+</title>
+
+{% block extra_page_meta %}
+{% endblock extra_page_meta %}
+
+{# TODO: add integretry values to these, "just in case" #}
+{# <link rel="stylesheet" href="/static/ext/semantic.min.css"> #}
+<link rel="stylesheet" href="/static/ext/semantic-ubuntu.min.css">
+<script src="/static/ext/jquery-3.1.1.min.js"
+  integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+  crossorigin="anonymous"></script>
+<script src="/static/ext/lodash.min.js"></script>
+<script src="/static/ext/semantic.min.js"></script>
+<script src="/static/ext/base64js.min.js"></script>
+<script src="/static/ext/vue.js"></script>      {# leave in dev mode #}
+
+{% block extra_head_code %}
+{% endblock extra_head_code %}
+
+<script src="/static/project.js"></script>
+<link rel="stylesheet" href="/static/style.css">
+
+<link rel="icon" href="/static/favicon.png">
+
+{% block head_style %}
+{% endblock head_style %}
+</head>
+
+<body>
+
+{% block body %}{% endblock body %}
+
+
+{% if ws_url %}
+<div class="ui small modal js-api-fail">
+  <div class="header">Failed.</div>
+  <div class="content"></div>
+  <div class="actions">
+    <div class="ui cancel button">Dismiss</div>
+  </div>
+</div>
+
+<div class="ui small modal js-api-success">
+  <div class="header">Success!</div>
+  <div class="content"></div>
+  <div class="actions">
+    <div class="ui cancel button">Dismiss</div>
+  </div>
+</div>
+
+<script>
+  window.WEBSOCKET_URL = "{{ws_url}}";
+</script>
+{% endif %}
+
+{% block even_more_js %}{% endblock %}
+{% block endscript %}{% endblock %}
+
+</body></html>

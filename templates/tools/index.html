@@ -1,0 +1,164 @@
+{% extends "navpage.html" %}
+{% from "macros.html" import needs_coldcard_callout %}
+{% from "macros.html" import needs_coldcard_message, subhead, bool_choice %}
+
+{% block main_body %}
+<div class="ui" id="tools" v-cloak>
+
+{# needs_coldcard_message() #}
+
+<div class="ui segment">
+<h2>Text Message Signing</h2>
+
+<div v-if="!msg_paths.length">
+    Message signing is disabled by your HSM policy so it's not possible to sign messages.
+</div>
+
+<div v-else class="ui form" >
+  <div class="ui field">
+    <label>Message (single line recommended)</label>
+    <textarea rows=2 class="ui textarea" v-model="msg_text" placeholder="(required)">
+    </textarea>
+  </div>
+
+  <div class="ui three fields">
+    <div class="ui field">
+      <label>Derivation Path</label>
+      <input type="text" v-model="signing_path" style="width: 90%"></input>
+
+      {% if msg_paths %}
+        <div class="ui simple dropdown js-shortcuts">
+          <div class="text">&nbsp;Shortcuts</div>
+          <i class="dropdown icon"></i>
+          <div class="menu">
+            {% for p in msg_paths %}
+              <div class="item" @click.prevent='pick_path({{p|tojson}})'><tt>{{p}}</tt></div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="ui grouped fields">
+      <label>Address Format</label>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" v-model="addr_fmt" value="classic" name="addr_fmt">
+          <label>Classic (base58)</label>
+        </div>
+      </div>
+      <div class="field">
+        <div class="ui radio checkbox">
+          <input type="radio" v-model="addr_fmt" value="segwit" name="addr_fmt">
+          <label>Segwit (bech32)</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="field">
+    <button class="ui huge icon submit primary button"
+        @click.prevent="sign_message_btn"
+        :class="{disabled: !msg_text.length || !signing_path.length || !STATUS.connected, loading: busy_signing}"
+    ><i class="pencil alternate icon"></i> Sign Message</button>
+    {{ needs_coldcard_callout('top') }}
+  </div>
+
+
+  <div class="ui horizontal divider" style="padding-top: .8em">
+      Signature &amp; Address
+  </div>
+
+  <div class="ui field" :class="{disabled: !signature}">
+    {#<label>Signature and Address</label> #}
+    <textarea rows=2 class="ui textarea tt-font-small" v-model="signature"></textarea>
+  </div>
+
+</div>
+</div>
+
+<div class="ui segment">
+  <h2>Recovery Tool</h2>
+
+  <p>This will provide a means for you to construct a PSBT
+  which moves all the funds the system can find on the blockchain 
+  to a new address.</p>
+
+  <div class="ui orange label">WIP</div>
+</div>
+
+<div class="ui segment">
+  <h2>Address Generator</h2>
+
+  <p>Use this tool to make deposit addresses for your Coldcard's wallets.</p>
+
+  <div class="ui orange label">WIP</div>
+</div>
+
+</div>
+{% endblock %}
+
+{% block endscript %}
+<script>
+window.tools = new Vue({
+  el: '#tools',
+  data: {
+    STATUS: {{ STATUS|tojson }},
+    msg_text: '',
+    signing_path: {{(msg_paths[0] or 'm') | tojson}},
+    addr_fmt: 'classic',
+    msg_paths: {{ msg_paths|tojson}},
+    signature: '',
+    busy_signing: false,
+  },
+  watch: {
+    addr_fmt: function(nv,ov) {
+        if(nv != ov) this.signature = '';
+    },
+    msg_text: function(nv,ov) {
+        if(nv != ov) this.signature = '';
+    },
+    signing_path: function(nv,ov) {
+        if(nv != ov) this.signature = '';
+        if(nv.startsWith("m/84'/")) {
+            this.addr_fmt = 'segwit';
+        }
+    },
+  },
+  methods: {
+    sign_message_btn: function() {
+        this.msg_text = this.msg_text.trim();
+        this.busy_signing = true;
+        window.WEBSOCKET('sign_message', this.msg_text, this.signing_path, this.addr_fmt);
+    },
+    pick_path: function(p) {
+        this.signing_path = p;
+    },
+  },
+  mounted: function() {
+    // results come back thru here
+    window.vue_app_cb = function(resp) {
+        var self = window.tools;
+
+        if(resp.update_status) {
+            self.STATUS = resp.update_status;
+        }
+        if(resp.msg_signing_result) {
+            self.busy_signing = false;
+            self.signature = resp.msg_signing_result;
+        }
+    };
+
+    console.log('config');
+
+    // bugfix; stop semantic from changing text of Shortbuts dropdown
+    setTimeout(function() {
+      $('.js-shortcuts').dropdown({ action: 'hide' });
+    }, 100);
+
+  },
+})
+
+</script>
+{% endblock %}

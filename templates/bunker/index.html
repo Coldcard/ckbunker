@@ -1,0 +1,182 @@
+{% extends "navpage.html" %}
+
+{% from "macros.html" import message_box, bool_choice, amount, info_hover,
+                        text_field, bool_choice, wrap_field %}
+
+{% block main_body %}
+<div class="ui segment" id="bunker" v-cloak>
+
+  {% call message_box('Tor Daemon Missing', '!STATUS.tord_good && !force_local_mode',
+        icon='warning sign') %}
+    The Bunker cannot communicate with <tt>tord</tt> (Tor daemon) which we need. It should
+    be available on ports 9051 and 9151 of localhost.
+  {% endcall %}
+
+  <h2>Bunker Setup &amp; Configuration</h2>
+
+  <div class="ui form">
+
+    <template v-if="!force_local_mode">
+      {{ bool_choice('tor_enabled', "Operate Tor Hidden Service", disabled_if='using_onion') }}
+
+      {% call wrap_field(None, 'Onion Address', disabled_if="!tor_enabled || using_onion") %}
+        <div class="ui action input">
+          <input v-model="onion_addr" class="tt-font" minlength=70 maxlength=70 required
+              type="text" readonly placeholder="(disabled)">
+          <button class="ui button" @click="pick_onion_addr()"><i class="recycle icon"></i> Spin Again</button>
+        </div>
+      {% endcall %}
+
+      {% call wrap_field(None, 'Master Login Password') %}
+        <div class="ui action input">
+          <input v-model="master_pw" class="tt-font" minlength=4 maxlength=128 required
+              type="text" placeholder="{{placeholder}}">
+          <button class="ui button" @click="pick_master_pw()"><i class="recycle icon"></i> Spin Again</button>
+        </div>
+      {% endcall %}
+
+      {{ bool_choice('easy_captcha', "Use a simple captcha without animation") }}
+    </template>
+
+    {% call bool_choice('allow_reboots', None) %}
+        <label>Allow Bunker to be restarted without requiring a restart
+               of the Coldcard
+          {{ info_hover("Change applied on next update to Coldcard's HSM policy.") }}
+        </label>
+    {% endcall %}
+
+  </div>
+
+
+  <br>
+  <div class="ui grid">
+    <div class="eight wide column ">
+      <button class="ui large primary button" 
+          @click="save_changes()">
+          <i class="check mark icon"></i> Save Changes </button>
+    </div>
+    <div class="eight wide column right aligned">
+      <button class="ui mini basic button" 
+          @click="logout_everyone()">
+          <i class="logout icon"></i> Everyone Logout </button>
+        &nbsp;
+      <button class="ui mini basic button" 
+          @click="shutdown_bunker()">
+          <i class="stop sign icon"></i> Stop Bunker </button>
+    </div>
+  </div>
+
+
+  {% call message_box('Write These Down!', '!force_local_mode', icon='edit', closable=1) %}
+    We recommend you make note of the the onion address and/or master password.
+  {% endcall %}
+
+  {% if STATUS.setup_mode and not STATUS.force_local_mode %}
+    {% call message_box('No Tor Connections during Setup Mode', 'tor_enabled && !STATUS.onion_addr && STATUS.tor_enabled', closable=1) %}
+    <div class="ui grid">
+      <div class="ten wide column">
+        To enable Tor (onion) connections, either
+        restart bunker in normal mode (it is in 'setup mode' now) or use this button.
+      </div>
+      <div class="right aligned six wide column">
+        <button class="ui large green icon button" @click="leave_setup_btn()">
+            <i class="play icon"></i>&nbsp;&nbsp;Start Tor</button>
+      </div>
+    </div>
+    {% endcall %}
+  {% endif %}
+
+  {% call message_box('Visit on Tor', '!using_onion && STATUS.onion_addr', icon='external link', closable=1) %}
+    {% raw %}
+        Go to <a :href="STATUS.onion_addr|http_link" target="torbrowser">{{STATUS.onion_addr}}</a>
+    {% endraw %}
+  {% endcall %}
+
+
+</div>
+{% endblock main_body %}
+
+
+{% block endscript %}
+
+<script>
+
+window.bunker_page = new Vue({
+  el: '#bunker',
+  data: {
+    STATUS: {{ STATUS|tojson }},
+
+    tor_enabled: {{ BP.tor_enabled|tojson }},
+    master_pw: {{ BP.master_pw|tojson }},
+    onion_addr: {{ BP.onion_addr|tojson }},
+    easy_captcha: {{ BP.easy_captcha|tojson }},
+    allow_reboots: {{ BP.allow_reboots|tojson }},
+    onion_pk: null,
+
+    force_local_mode: {{ force_local_mode|tojson }},
+  },
+  computed: {
+    using_onion: function() {
+        return Boolean(window.location.host.match(/\.onion$/))
+    },
+  },
+  watch: {
+      tor_enabled: function(nv) {
+        if(nv && !this.onion_addr) {
+            this.pick_onion_addr();
+        }
+      },
+  },
+  filters: {
+    http_link: function(v) {
+        return 'http://' + v;
+    },
+  },
+
+  methods: {
+    pick_onion_addr: function() {
+        window.WEBSOCKET('pick_onion_addr');
+    },
+    pick_master_pw: function() {
+        window.WEBSOCKET('pick_master_pw');
+    },
+    save_changes: function() {
+        var t = _.omit(this.$data, ['STATUS']);
+        window.WEBSOCKET('new_bunker_config', JSON.stringify(t));
+    },
+    logout_everyone: function() {
+        window.WEBSOCKET('logout_everyone');
+    },
+    shutdown_bunker: function() {
+        window.WEBSOCKET('shutdown_bunker');
+    },
+    leave_setup_btn: function() {
+        window.WEBSOCKET('leave_setup_mode');
+    },
+  },
+
+
+  mounted: function() {
+    // results come back thru here
+    window.vue_app_cb = function(resp) {
+        var self = window.bunker_page;
+
+        if(resp.update_status) {
+            self.STATUS = resp.update_status;
+        }
+
+        if(resp.new_onion_addr) {
+            self.tor_enabled = true;
+            self.onion_addr = resp.new_onion_addr[0];
+            self.onion_pk = resp.new_onion_addr[1];
+        }
+        if(resp.new_master_pw) {
+            self.master_pw = resp.new_master_pw;
+        }
+    };
+  },
+})
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% from "macros.html" import textarea, subhead %}
+{% call accord('Derivation Paths', 'For message signing & address generation', pill="ADVANCED") %}
+
+<div class="ui grid form">
+  <div class="ten wide column">
+
+    {{ subhead("Derivation Path Whitelists") }}
+
+    <p>
+    You may limit text message signing to specific derivation paths. Similarly, the Coldcard will
+    not share calculated addresses or derived XPUB values, unless whitelisted here.
+    </p><p>
+    Leave blank to block corresponding feature. Multiple values maybe be given,
+    separated by spaces or commas.
+    </p>
+
+
+    {{ textarea('POLICY.msg_paths', "Will only sign messages using indicated path(s)",
+            placeholder="(signing not be allowed)") }}
+  </div>
+
+  <div class="six wide right aligned column">
+    <table class="ui compact simple small table">
+      <thead>
+        <tr><th colspan=2>Special Values
+      <tbody>
+         <tr><td><tt>any</tt> <td>Allow any path.
+         <tr><td><tt>m/1/2/3/*</tt> <td>Require that path but the last position is any value.
+         <tr><td><tt>m/1/2/3/*'</tt> <td>Last position must be hardened.
+         <tr><td><tt>p2sh</tt> <td>Allow P2SH (script) addresses for multisig wallets.
+    </table>
+  </div>
+</div>
+
+<div class="ui grid form">
+  <div class="sixteen wide column">
+    {{ subhead("Other Whitelisted Derivation Paths") }}
+
+    <div class="ui two fields">
+
+      {{ textarea('POLICY.share_xpubs', "Share derived XPUB values on these paths (master xpub is always shared)",
+           placeholder="(xpub derivation not allowed)") }}
+
+      {{ textarea('POLICY.share_addrs', "Share these derived addresses (ie. deposit addresses)",
+           placeholder="(address derivation not allowed)") }}
+    </div>
+  </div>
+</div>
+{% endcall %}
+

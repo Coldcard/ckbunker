@@ -1,0 +1,221 @@
+
+{% macro ws_fail_message() %}
+<div id="ws_fail_msg" class="ui icon negative message" style="display:none">
+  <i class="warning sign icon"></i>
+  <div class="content">
+    <div class="header">
+      Websocket Connection Broken.
+    </div>
+    <p>Something's wrong with the connection back to the Bunker.
+        You will have to reload this page.</p>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro flash_msg_holder() %}
+<div class="ui yellow message transition hidden" id='js-flash-msg'>
+  <i class="close icon"></i>
+  <div class="content">
+    <div class="icon header">
+      <i class="info circle icon"></i>
+      Note
+    </div>
+    <p class="js-content"></p>
+  </div>
+</div>
+
+{% endmacro %}
+
+{# these values are mirroring real config values, must share same name; use in JS #}
+{% macro cfg_mirrors(fld_names) %}
+  {% for fn in fld_names %}
+    {{fn}}: {{ CFG.get(fn)|tojson }},
+  {% endfor %}
+{% endmacro %}
+
+{% macro select_field(title, cfgname, values, labels, default_idx=0, numeric=False, width='eight', hide_label=False) %}
+  <div class="{{width}} wide field">
+    {% if not hide_label %}<label>{{title}}</label>{% endif %}
+    <select class="ui dropdown" 
+          {% if numeric %}
+            v-model.number="{{cfgname}}"
+          {% else %}
+            v-model="{{cfgname}}"
+          {% endif %}
+          @change="changed_field('{{cfgname}}', $event, {{numeric|tojson}})">
+      {% for val,lab in zip(values, labels) %}
+        <option value='{{val}}'>{{lab}}
+                                  {% if loop.index0 == default_idx %} &nbsp;&nbsp;&nbsp;(default){% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+{% endmacro %}
+
+
+{% macro needs_coldcard_message() %}
+<div v-cloak>
+  <div v-if="!STATUS.connected" class="ui icon negative small compact message">
+    <i class="usb icon"></i>
+    <div class="content">
+      <div class="header">
+        Coldcard USB Not Connected
+      </div>
+      <p>This feature needs a USB connection to the Coldcard. Please
+          check the USB cable is connected, and verify the Coldcard
+          is unlocked with the master PIN code.</p>
+    </div>
+  </div>
+</div>
+{% endmacro %}
+
+{% macro message_box(title, show_if, icon='warning sign', closable=False) %}
+  <div v-if="{{show_if|safe}}" class="ui icon small compact message">
+    {% if closable %} <i class="close icon"></i> {% endif %}
+    <i class="{{icon}} icon"></i>
+    <div class="content">
+      <div class="header">{{ title }}</div>
+      <p>{{ caller() }}</p>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro needs_coldcard_callout(dir='left') %}
+<div v-if="!STATUS.connected" class="ui {{dir}} pointing red basic label" v-cloak>
+  <i class="usb icon"></i>Coldcard not connected
+</div>
+{% endmacro %}
+
+{% macro select_field(title, cfgname, values, labels, default_idx=0, numeric=False, width='eight', hide_label=False) %}
+  <div class="{{width}} wide field">
+    {% if not hide_label %}<label>{{title}}</label>{% endif %}
+    <select class="ui dropdown" 
+          {% if numeric %}
+            v-model.number="{{cfgname}}"
+          {% else %}
+            v-model="{{cfgname}}"
+          {% endif %}
+          @change="changed_field('{{cfgname}}', $event, {{numeric|tojson}})">
+      {% for val,lab in zip(values, labels) %}
+        <option value='{{val}}'>{{lab}}
+                                  {% if loop.index0 == default_idx %} &nbsp;&nbsp;&nbsp;(default){% endif %}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+{% endmacro %}
+
+{% macro wrap_field(fldname, label, desc, disabled_if=None) %}
+  <div class="ui field"
+        {% if disabled_if %}     
+          :class="{ disabled: ({{disabled_if}})}"
+        {% endif %}>
+    {% if label %}
+      <label>{{label}} <br><small>{{desc}}</small></label>
+    {% endif %}
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+{% macro amount(fldname, label, desc, placeholder="(any amount)", disabled_if=None) %}
+  {% call wrap_field(fldname, label, desc, disabled_if) %}
+    <div class="ui right labeled input">
+      <input v-model="{{fldname}}" type="number" placeholder="{{placeholder}}"
+        step="any" min="0" max="21E6" list="default-amts"
+        style="text-align: right;" maxlength="12">
+      <div class="ui basic label">{% raw %}{{ chain }}{% endraw %}</div>
+    </div>
+  {% endcall %}
+{% endmacro %}
+
+{% macro text_field(fldname, label, desc, placeholder="(not used)", extras="", rhs_label="tbd", disabled_if=None) %}
+  {% call wrap_field(fldname, label, desc, disabled_if) %}
+    <div class="ui right labeled input">
+      <input v-model="{{fldname}}" type="text" placeholder="{{placeholder}}" {{extras}}>
+      <div class="ui basic label">
+        {{rhs_label|safe}}
+      </div>
+    </div>
+  {% endcall %}
+{% endmacro %}
+
+{% macro textarea(fldname, label, desc, placeholder, disabled_if=None, rows=1) %}
+  {% call wrap_field(fldname, label, desc, disabled_if) %}
+    <textarea v-model="{{fldname}}" rows="{{rows}}" placeholder="{{placeholder}}"></textarea>
+  {% endcall %}
+{% endmacro %}
+
+{% macro choice(fldname, label, desc, values=None, extras=[], multi=False, disabled_if=None, default_text='') %}
+  {% call wrap_field(fldname, label, desc, disabled_if) %}
+    <div class="ui selection dropdown {% if multi %} multiple {% endif %}">
+      <input :value="{{fldname}}" :data-obj="{{fldname}}" type="hidden"
+        @change="select_fixit('{{fldname}}', $event)">
+      <i class="dropdown icon"></i>
+      <div class="default text">{{default_text}}</div>
+      <div class="menu">
+        {% for val,label in extras %}
+          <div class="item" data-value="{{val}}">{{label}}</div>
+        {% endfor %}
+        {% if values %}
+          <div v-for="i in {{values}}" class="item" 
+            {% raw %} :data-value="i">{{i}} {% endraw %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  {% endcall %}
+{% endmacro %}
+
+{% macro bool_choice(fldname, desc, disabled_if=None, style="toggle", fld_kls="field", readonly_if=None) %}
+  <div class="{{fld_kls}}">
+    <div class="ui {{style}} checkbox">
+      <input type="checkbox" v-model="{{fldname}}"
+        {% if readonly_if %}     
+          :readonly="{{readonly_if}}"
+        {% endif %}
+        {% if disabled_if %}     
+          :disabled="{{disabled_if}}"
+        {% endif %}>
+      {% if not caller %}
+        <label>{{desc}}</label>
+      {% else %}
+        {{ caller() }}
+      {% endif %}
+    </div>
+  </div>
+{% endmacro %}
+
+
+{% macro subhead(tt) %}
+<h3 class="ui dividing header">{{tt}}</h3>
+{% endmacro %}
+
+{% macro HR() %}
+<hr class="my_hr"></hr>
+{% endmacro %}
+
+{% macro fileupload(label, change, kls="ui large button") %}
+    <input type="file" @change="{{change}}" class="inputfile" id="embedpollfileinput"
+        accept="text/plain,.txt,.json,application/json" />
+    <label for="embedpollfileinput" class="{{kls}}">
+      <i class="ui upload icon"></i> 
+      {{ label }}
+    </label>
+{% endmacro %}
+
+{% macro info_hover(msg) %}
+    <span data-tooltip="{{msg}}">
+      <i class="info circle icon"></i>
+    </span>
+{% endmacro %}
+
+{% macro info_hover_long(pos=None) %}
+    <span style="float: right;">
+      <i class="info circle icon js-long-popup"
+            data-variation="very wide"
+            {% if pos %} data-position="{{pos}}" {% endif %}></i>
+      <div class="ui popup">
+       {{ caller() }}
+      </div>
+    </span>
+{% endmacro %}

@@ -1,0 +1,39 @@
+{% from "macros.html" import amount, textarea, choice, bool_choice %}
+
+{% macro mu_radio(label, desc) %}
+    {{ choice('rule.min_users', label, desc, extras=[('', "(n/a)"), (1, 'Any One'), (2, 'Two Users'), (3, 'Three Users'), ('all', 'All Users')], disabled_if="rule.users.length == 0") }}
+{% endmacro %}
+
+
+<div>
+    <div class="ui two fields">
+      {{amount('rule.max_amount', "Max Amount",
+                  "Max amount allowed per single transaction. Leave blank for no limit.")}}
+      {{amount('rule.per_period', "Per-Period Amount",
+                  "Max amount in one period. Leave blank for no period limit.",
+                  disabled_if="no_period")}}
+    </div>
+
+    <div class="ui two fields">
+      {{textarea('rule.whitelist', "Destination Whitelist",
+              "Can only send to these specific payment addresses.",
+              "(base58 or segwit addresses)")}}
+      {{ choice('rule.wallet', "Multisig Wallet Name",
+              "Rule only applies to a specific multisig wallet, or only single-signer (not multisig), or all wallets.",
+              "wallet_list",
+              extras = [('', '(any wallet)'), ('1', '(single signer wallet)')],
+              disabled_if="wallet_list.length==0") }}
+    </div>
+
+    <div class="ui two fields">
+      {{ choice('rule.users', "Authorizing Users",
+            "These users must authenticate to allow the transaction, or blank for no user auth.",
+            "user_list", multi=1, default_text="(no user auth)")}}
+      {{ mu_radio("Minimum Users Needed", "How many of those users are required?") }}
+    </div>
+
+    {{ bool_choice('rule.local_conf', "Unique 6-digit code (per transaction) must be entered on Coldcard keypad.") }}
+
+</div>
+
+

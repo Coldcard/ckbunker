@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "macros.html" import ws_fail_message, flash_msg_holder %}
+
+{% block body %}
+<header class="ui fixed stackable inverted menu">
+  <div class="ui container">
+    <a href="/" class="header item"
+      ><img src="/static/navicon.png" style="height: 20px; width: 20px; margin-right: .5em;"
+    ><i>CK Bunker</i></a>
+
+    {% for (path, title) in PAGES %}
+      <a class="item {% if CUR_PAGE == path %}active{% endif %}"
+            href="{{path}}">{{title}}</a>
+    {% endfor %}
+    <a class="item" href="https://coldcardwallet.com/docs" target="docs"
+        >Docs&nbsp;&nbsp;<i class="external alternate icon"></i></a>
+    <div class="right menu">
+      <a class="icon item" title="Immediate logout"
+          href="/logout"><i class="logout icon"></i></a>
+      <a href="/" class="text item"
+          style="font-size: 80%;" title="Current software version: {{VERSION}}"
+              >{{VERSION}} <span class="ui blue mini label">BETA</span></a>
+    </div>
+  </div>
+</header>
+
+{% block uncontained_body %}
+  {% block pre_main_body %}{% endblock %}
+
+  <main class="ui main container main-content-wrapper">
+    {{ flash_msg_holder() }}
+    {{ ws_fail_message() }}
+
+    {% block main_body %}{% endblock %}
+  </main>
+{% endblock %}
+
+{% block footer %}
+  <footer class="ui footer inverted segment">
+    <div class="ui grid container">
+      <div class="row">
+        <div class="five wide column">
+          © 2020 by &nbsp;{{ "https://coinkite.com" | extlink("Coinkite Inc.") }}
+        </div>
+        <div class="six wide center aligned column">
+          {{ ''|link_to_explorer }}
+        </div>
+        <div class="five wide column right aligned">
+            {{ "https://coldcardwallet.com/" | extlink("Coldcard Website") }}
+        </div>
+      </div>
+    </div>
+  </footer>
+{% endblock footer %}
+
+
+{% endblock body %}

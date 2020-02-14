@@ -1,0 +1,58 @@
+{% from "macros.html" import bool_choice, textarea, subhead, text_field, HR %}
+
+{% call accord('Other Policy', 'Logging and other system-wide rules') %}
+<div class="ui form">
+  <h4> Logging </h4>
+  <div class="ui two fields">
+    {{ bool_choice('POLICY.must_log', "Fail transactions if we cannot log to MicroSD") }}
+    {{ bool_choice('POLICY.never_log', "Do not log anything, even if MicroSD is inserted") }}
+  </div>
+
+{{HR()}}
+
+  <h4> Warnings </h4>
+
+  {{ bool_choice('POLICY.warnings_ok', "Permit signing of transactions (PSBT) which have warnings (default: does not).") }}
+
+{{HR()}}
+
+  <h4> Privacy Vs. Easy of Use </h4>
+  {{ bool_choice('POLICY.priv_over_ux', "If you prefer privacy over convenience, this causes Coldcard to be more secretive and makes the Bunker harder to use, because both will store less data about policy, usernames, and derivation paths.") }}
+
+{{HR()}}
+  <h4> Boot To HSM </h4>
+
+  <div class="ui two fields">
+    {{ text_field('POLICY.boot_to_hsm', 
+        "Coldcard will reboot directly to HSM mode, but will accept this 6-digit code to escape, if provided immediately.",
+         placeholder="(optional)", extras='pattern="[0-9]{6}" required minlength=6 maxlength=6 ',
+        rhs_label="6-digit code", disabled_if="POLICY.ewaste_enable") }}
+    {{ bool_choice('POLICY.ewaste_enable', "Do not accept any code. Always boot to HSM mode.") }}
+    {# bool_choice('POLICY.ewaste_enable', "Do not accept any code. Always stay in HSM mode and there is no way out. CAUTION: Even master PIN holder cannot change HSM policy nor escape HSM mode! Firmware upgrades are not possible.") #}
+  </div>
+
+  <div class="ui yellow icon compact message" v-if="POLICY.ewaste_enable">
+    <i class="warning sign icon"></i>
+    <div class="content">
+      <div class="header">
+        Warning
+      </div>
+      <p>
+        This setting is <b>irreversible</b>.
+        No changes to firmware, HSM policy, Coldcard settings will be possible&mdash;ever again.
+        <br>
+        Not even the master PIN holder can change HSM policy nor escape HSM mode! Firmware upgrades are not possible.
+      </p>
+    </div>
+  </div>
+
+
+
+{{HR()}}
+  <h4> Notes </h4>
+
+  {{ textarea('POLICY.notes',  "Free-form text shown on Coldcard when approving HSM Policy.",
+           placeholder="(optional)", rows=3) }}
+</div>
+{% endcall %}
+

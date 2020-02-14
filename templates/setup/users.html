@@ -1,0 +1,94 @@
+{% call accord('Users', 'Add and remove Coldcard users', active=False) %}
+
+<div class="ui form">
+  <div class="ui grid">
+    <div class="ten wide column">
+
+      <h4>Add New Users</h4>
+      <p>
+        Add up to 30 user names here. These users can authorize 
+        spending based on the specific rules where they are named. Verification of the user is 
+        done via 2FA or passwords.
+      </p>
+
+{% raw %}
+      <div class="fields">
+        <div class="field">
+          <label>Username</label>
+          <input v-model="new_username" type="text" class="tt-font"
+            maxlength="16"
+            placeholder="username (16 chars)" autocomplete="off">
+        </div>
+
+        <div class="field" v-if="authmode == 'give_pw'">
+          <label>Password</label>
+          <input v-model="new_password"
+                type="password" placeholder="(password)" autocomplete="off" >
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Auth Method</label>
+
+        <div class="inline fields">
+            
+          <div class="ui radio checkbox field"
+              data-position="top left"
+              data-tooltip="Use any RFC6238-compatible mobile app to scan the QR code and generate a 6-digit, time-based, single-use pass code">
+            <input type="radio" v-model="authmode" value="totp" checked="" tabindex="0" class="hidden">
+            <label>TOTP based 2FA
+            </label>
+          </div>
+
+          <div class="ui radio checkbox field"
+              data-position="top left"
+              data-variation="wide"
+              data-tooltip="Coldcard picks a password and shows it on-screen for you to capture (QR and text)">
+            <input type="radio" v-model="authmode" value="rand_pw" tabindex="0" class="hidden">
+            <label>Password (random)
+            </label>
+          </div>
+
+          <div class="ui radio checkbox field"
+              data-tooltip="Conventional secret password you provide">
+            <input type="radio" v-model="authmode" value="give_pw" tabindex="0" class="hidden">
+            <label>Password (provided)
+            </label>
+          </div>
+        </div>
+
+          
+      </div>
+
+      <div class="field">
+        <button class="ui compact blue icon button" 
+            :disabled="new_username.length == 0 || !STATUS.connected"  @click="create_user()"
+        ><i class="icon add"></i> Add User</button>
+        {% endraw %}
+          {{ needs_coldcard_callout() }}
+        {% raw %}
+      </div>
+    </div>
+
+    <div class="six wide column">
+      <table class="ui table">
+      <thead>
+        <tr><th>Existing Coldcard Users
+      <tbody> 
+        <tr v-for="(name, index) in STATUS.hsm.users">
+          <td>
+          &nbsp;&nbsp;<button class="ui mini icon button" title="Delete user!"
+                @click="delete_user(name)"
+              ><i class="close fitted icon"></i></button>
+            <tt>{{name}}</tt>
+        </tr>
+        <tr v-if="!STATUS.hsm.users || STATUS.hsm.users.length == 0">
+          <td><em>No users yet.</em>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+{% endraw %}
+{% endcall %}
+

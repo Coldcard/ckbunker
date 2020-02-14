@@ -1,0 +1,36 @@
+{% from "macros.html" import amount, text_field, bool_choice, wrap_field %}
+
+{% call accord('Onion Address', 'Enable Tor access to the Bunker') %}
+<div class="ui grid form">
+
+  <div class="six wide column">
+    <div class="field">
+      <div class="ui toggle checkbox">
+        <input type="checkbox" v-model="enable_onion">
+        <label>Operate Tor Hidden Service</label>
+      </div>
+    </div>
+
+    {% call wrap_field(None, 'Tor Login Password', disabled_if="!enable_onion") %}
+      <div class="ui action input">
+        <input v-model="master_pw" class="tt-font" minlength=4 maxlength=128 required
+            type="text" placeholder="{{placeholder}}" {{extras}}>
+        <button class="ui button" @click="pick_master_pw()"><i class="recycle icon"></i> Spin Again</button>
+      </div>
+    {% endcall %}
+
+    </div>
+
+  <div class="ui ten wide right aligned column" v-if="enable_onion">  
+{% raw %}
+      <tt class="tt-font-small">http://{{onion_addr}}</tt>
+{% endraw %}
+
+      <br>
+      <button style="margin-top: 8px;" class="ui small button" @click="pick_onion_addr()"><i class="recycle icon"></i> Spin Again</button>
+  </div>
+
+</div>
+    
+{% endcall %}
+

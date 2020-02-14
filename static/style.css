@@ -1,0 +1,142 @@
+body {
+  background-color: #FFFFFF;
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+.ui.menu .item img.logo {
+  margin-right: 1.5em;
+}
+
+.main.container {
+  margin-top: 6em;
+}
+
+@media only screen and (max-width: 767px) {
+  .main.container {
+    margin-top: 13em;
+  }
+}
+
+.main-content-wrapper {
+  margin-top: 7em;
+  flex: 1;
+}
+.ui.menu .item img.logo {
+  margin-right: 1.5em;
+}
+
+.ui.footer.segment {
+    margin: 9em 0em 0em;
+}
+
+/* mobile hacks */
+@media only screen and (max-width: 767px) {
+  .seg7-container { 
+  }
+  .seg7-row { 
+    font-size: 2.5em;
+  }
+  .indicators {
+      font-size: 0.5em;
+      width: 2em;
+      margin-top: -5.5em;
+  }
+}
+
+.js-expr-help-btn {
+    margin-left: 0.10em;
+    cursor: pointer;
+}
+
+/* compress search results */
+.js-key-search-results {
+    overflow-y: auto;
+    max-height: 500px;
+}
+
+.ui.category.search >.results .category .result {
+    padding: 2px 12px;
+}
+.ui.search>.results .result .title {
+    padding: 0px;
+}
+
+a.extlink {
+    color: #4d4d4d;
+}
+.inverted a.extlink {
+    color: #eee;
+}
+
+/* accordion headings, make big, more like H2 they are */
+.ui.accordion .title.bigger {
+    font-size: 1.8em !important;
+}
+.ui.accordion span.my_sub {
+    font-size: 60%;
+    margin-left: 2em;
+    float: right;
+    margin: 9px 0 0 0 ;
+}
+
+hr.my_hr {
+    border-color: rgba(255,255,255,.5);
+}
+
+input.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+
+.tt-font {
+    font-family: courier !important;
+}
+
+.tt-font-small {
+    font-family: courier !important;
+    font-size: 13px !important;
+}
+ 
+
+pre.wordwrap {
+    white-space: pre-wrap;
+}
+
+/* keep at bottom */
+/* see https://stackoverflow.com/questions/36186831 */
+[v-cloak] {
+    display: none !important;
+}
+
+.bignum {
+    font-size: 180%;
+    line-height: 160%;
+}
+
+.btcnum {
+    font-size: 120%;
+    line-height: 150%;
+}
+
+code.sha256 {
+    /*border: #ccc solid 0.5px;
+    border-radius: 3px; */
+    padding: 2px 6px;
+    font-weight: 600;
+}
+
+input.width-fix {
+    width: 12em !important;
+}
+
+/* Firefox bugfixes */
+.ui.toggle.checkbox label {
+    cursor: pointer;
+}
+

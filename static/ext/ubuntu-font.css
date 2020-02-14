@@ -1,0 +1,29 @@
+/* from https://fonts.googleapis.com/css?family=Ubuntu:400,400i,700,700i&display=swap */
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Ubuntu Italic'), local('Ubuntu-Italic'), url(ubuntu/4iCu6KVjbNBYlgoKej70l0w.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: italic;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Ubuntu Bold Italic'), local('Ubuntu-BoldItalic'), url(ubuntu/4iCp6KVjbNBYlgoKejZPslyPN4Q.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Ubuntu Regular'), local('Ubuntu-Regular'), url(ubuntu/4iCs6KVjbNBYlgoKfw7z.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Ubuntu';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Ubuntu Bold'), local('Ubuntu-Bold'), url(ubuntu/4iCv6KVjbNBYlgoCxCvjsGyI.ttf) format('truetype');
+}

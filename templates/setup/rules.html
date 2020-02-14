@@ -1,0 +1,96 @@
+{% call accord('Spending Rules', 'When and how much can be sent out') %}
+
+{% from "macros.html" import subhead %}
+
+<div class="ui form">
+
+  {{ subhead("Velocity Time Period") }}
+
+  <div class="fields">
+    <div class="four wide field">
+      <div class="ui right labeled fluid input">
+        <input v-model="POLICY.period" type="number" placeholder="(disabled)"
+          style="text-align: center;"
+          maxlength="4">
+        <div class="ui basic label">
+          minutes
+        </div>
+      </div>
+    </div>
+
+{% raw %}
+    <div class="two wide field">
+      <div v-if="POLICY.period>=30" style="line-height: 37px;">
+        = {{ period_hrs }} hours
+      </div>
+    </div>
+{% endraw %}
+
+    <div class="ten wide right floated right aligned field">
+      <div class="ui mini buttons">
+        <button class="ui small compact button" @click="POLICY.period=null">Off</button>
+        <button class="ui small compact button" @click="POLICY.period=60">1 hr</button>
+        <button class="ui small compact button" @click="POLICY.period=2*60">2 hrs</button>
+        <button class="ui small compact button" @click="POLICY.period=4*60">4 hrs</button>
+        <button class="ui small compact button" @click="POLICY.period=8*60">8 hrs</button>
+        <button class="ui small compact button" @click="POLICY.period=12*60">12 hrs</button>
+        <button class="ui small compact button" @click="POLICY.period=24*60">1 day</button>
+        <button class="ui small compact button" @click="POLICY.period=48*60">2 days</button>
+        <button class="ui small compact button" @click="POLICY.period=72*60">3 days</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="description">
+    Time period starts as soon as rule with a velocity limit is applied.
+    The total amount sent is tracked, for each rule independently, until the period ends.
+    All rules share the same time period for these velocity calculations.
+  </p>
+
+  {{ subhead("Rules") }}
+
+  <p>
+    Multiple spending rules can be defined. The first matching rule is applied
+    when a PSBT is considered, and its velocity limit is the one affected, so place
+    more restrictive rules first. All elements of the specific rule must be met
+    before it is applied.
+  </p>
+  <p>
+    <button class="ui compact blue icon button" @click="add_rule()" :disabled="POLICY.rules.length >= 10"><i class="icon add"></i> Add Rule</button>
+  </p>
+
+  <div v-if="POLICY.rules.length == 0">
+    <p>NOTE: You have <b>no rules defined</b>. It will not be possible to authorize transactions.
+  </div>
+
+  <template v-for="(rule, idx) in POLICY.rules">
+{% raw %}
+    <h4 class="ui dividing header">Rule #{{idx+1}}</h4>
+{% endraw %}
+
+    <button style="float: right; margin-top: -43px; " class="ui mini red compact icon button"
+        @click="remove_rule(idx)"><i class="icon trash"></i> Delete Rule</button>
+
+    <hsmrule :rule="rule" :user_list="STATUS.hsm.users || []"
+                          :wallet_list="STATUS.hsm.wallets || []"
+              :chain="STATUS.hsm.chain || 'BTC'" :no_period="!POLICY.period">
+    </hsmrule>
+  </template>
+
+</div>
+{% endcall %}
+
+
+<datalist id="default-amts">
+  <option value="10.0">
+  <option value="5.0">
+  <option value="2.0">
+  <option value="1.0">
+  <option value="0.500">
+  <option value="0.200">
+  <option value="0.100">
+  <option value="0.050">
+  <option value="0.020">
+  <option value="0.010">
+</datalist>
+

@@ -1,0 +1,268 @@
+{% extends "navpage.html" %}
+{% from "macros.html" import needs_coldcard_callout %}
+{% from "macros.html" import fileupload, bool_choice %}
+
+{% macro accord(title, subtitle, active=False, pill=None) %}
+  <div class="title bigger {% if active %}active{% endif %}" id="{{title|slugify}}">
+    <i class="dropdown icon"></i>
+    {{ title }} 
+    <span class="my_sub">
+      {% if pill %}
+        <div class="ui basic mini label" style="margin-right: 2em; margin-bottom: 4px;">{{pill}}</div>
+      {% endif %}
+
+      {{subtitle}}
+      &nbsp;&nbsp;<a href="#{{title|slugify}}" class="ui basic mini icon label"><i class="fitted  chain icon"></i></a>
+    </span>
+  </div>
+  <div class="content {% if active %}active{% endif %}">
+    <div class="ui divider" style="margin: -5px -13px 28px;"></div>
+    {{ caller() }}
+  </div>
+{% endmacro %}
+
+
+
+{% block main_body %}
+{% raw %}
+<div class="ui" id="setup" v-cloak>
+
+<div v-if="STATUS.hsm.active" class="ui icon negative message" v-cloak>
+  <i class="ban icon"></i>
+  <div class="content">
+    <div class="header">
+      HSM Already Enabled
+    </div>
+    <p>
+        Further changes to the policy are not possible, because
+        the Coldcard is already in HSM mode.
+    </p></p>
+       To exit HSM mode, the Coldcard must be power-cycled.
+    </p>
+  </div>
+</div>
+
+<div v-if="STATUS.hsm.policy_available" class="ui icon message" v-cloak>
+  <i class="close icon"></i>
+  <div class="content">
+    <div class="header">
+      <i class="info circle icon"></i> Existing Policy
+    </div>
+
+    <p>
+      Your Coldcard already holds a policy file from a previous setup. Click here
+      to enable that policy and start the Coldcard in HSM mode. On-device
+      confirmation will be required.
+    </p>
+
+    <p>
+      <button class="ui primary button" @click="start_hsm_btn()">Start HSM Mode</button>
+    </p>
+  </div>
+</div>
+{% endraw %}
+
+<div class="ui fluid styled accordion" v-if="!STATUS.hsm.active">
+
+{% include 'setup/rules.html' with context %}
+{% include 'setup/users.html' with context %}
+{% include 'setup/paths.html' with context %}
+{% include 'setup/misc.html' with context %}
+{# include 'setup/onion.html' with context #}
+
+</div>
+
+<br>
+<div class="ui grid segment"  v-if="!STATUS.hsm.active">
+
+  <div class="nine wide column ">
+    <button class="ui huge primary button" 
+        :class="{disabled: !STATUS.connected || STATUS.hsm.active}"
+        @click="submit_policy()">
+        <i class="check mark icon"></i> Save &amp; Start Policy</button>
+    {{ needs_coldcard_callout() }}
+    <div style="margin-left: 1.0em; margin-top: 10px;">
+      {{ bool_choice('wants_copy', "Download (sanitized) copy", style="") }}
+    </div>
+  </div>
+
+  <div class="seven wide column right aligned">
+    <div class="buttons">
+      <button class="ui large button" 
+          @click="download_policy()">
+          <i class="download icon"></i> Download Policy</button>
+      {{ fileupload("Import Policy", 'import_policy($event)', 'ui large button') }}
+    </div>
+    <p style="font-size: 80%; margin-top: 4px; margin-right: 1em;">
+        <em>These policy files (JSON) contain sensitive information, including private key
+    for onion server and boot-to-HSM unlock code, when enabled.</em>
+    </p>
+  </div>
+</div>
+
+
+{% endblock main_body %}
+
+
+{% block endscript %}
+
+{% include "setup/hsm-rule-component.html" with context %}
+
+<script>
+
+function nice(n) {
+    if(Number.isInteger(n)) {
+        return n;
+    }
+    return n.toFixed(1);
+}
+
+// this is slightly cooked data compared to final JSON: strings in places of lists
+blank_rule = {
+    whitelist: '',
+    per_period: null,
+    max_amount: null,
+    users: '',
+    min_users: 'all',
+    local_conf: false,
+    wallet: null,
+}
+
+window.setup_page = new Vue({
+  el: '#setup',
+  data: {
+    STATUS: {{ STATUS|tojson }},
+    new_username: '',
+    new_password: '',
+    authmode: 'totp',
+    users: [],
+    wallets: [],
+    wants_copy: false,
+    POLICY: {
+      never_log: false,
+      must_log: false,
+      priv_over_ux: false,
+      boot_to_hsm: null,
+      period: null,
+      set_sl: null,
+      allow_sl: null,
+      rules: [_.cloneDeep(blank_rule)],
+    },
+  },
+  methods: {
+    start_hsm_btn: function() {
+        window.WEBSOCKET('start_hsm_btn');
+    },
+    delete_user: function(username) {
+        window.WEBSOCKET('delete_user', username);
+    },
+    create_user: function() {
+        window.WEBSOCKET('create_user', this.new_username, this.authmode, this.new_password);
+        this.new_password = '';
+        this.new_username = '';
+    },
+    submit_policy: function() {
+        // final step: send it all to Coldcard (after some python cleanup)
+        json = JSON.stringify(this.POLICY);
+        window.WEBSOCKET('submit_policy', json, this.wants_copy);
+    },
+    download_policy: function() {
+        json = JSON.stringify(this.POLICY);
+        window.WEBSOCKET('download_policy', json);
+    },
+    import_policy: function(evt) {
+        // could implement this locally, but then would have to write more JS
+        var file = evt.target.files[0];
+        file.text().then(function(t) {
+            jj = JSON.parse(t);
+            window.WEBSOCKET('import_policy', jj);
+        });
+    },
+    add_rule: function() {
+        this.POLICY.rules.push(_.cloneDeep(blank_rule));
+        Vue.nextTick(function () {
+          $('.ui.dropdown').dropdown({fullTextSearch: true});
+        });
+    },
+    remove_rule: function(idx) {
+        this.POLICY.rules.splice(idx, 1);
+    },
+    select_fixit: function(fldname, evt) {
+        // LIKE THIS: this.rule.users = val;
+        let val = $(evt.target).val();
+        eval('this.' + fldname + ' = val');
+    },
+  },
+
+  computed: {
+    period_hrs: function() {
+        return nice(this.POLICY.period / 60.0);
+    },
+  },
+
+  watch: {
+      'POLICY.must_log': function(new_val, old_val) {
+        if(new_val) {
+            this.POLICY.never_log = false;
+        }
+      },
+      'POLICY.never_log': function(new_val, old_val) {
+        if(new_val) {
+            this.POLICY.must_log = false;
+        }
+      },
+      'POLICY.ewaste_enable': function(new_val, old_val) {
+        if(new_val) {
+            this.POLICY.boot_to_hsm = null;
+        }
+      },
+
+      'POLICY.set_sl': function(new_val) {
+        this.enable_onion = !!new_val;
+      },
+
+      enable_onion: function(nv) {
+        if(!this.onion_addr) {
+            this.pick_onion_addr();
+        }
+      },
+  },
+
+  filters: {
+  },
+
+  mounted: function() {
+    // results come back thru here
+    window.vue_app_cb = function(resp) {
+        var self = window.setup_page;
+
+        console.log("CB: ", resp);
+        if(resp.update_policy) {
+            self.POLICY = resp.update_policy;
+        }
+        if(resp.update_status) {
+            self.STATUS = resp.update_status;
+        }
+        if(resp.new_onion) {
+            self.onion_enabled = true;
+            self.onion_addr = resp.new_onion.public;
+            self.POLICY.set_sl = resp.new_onion.private;
+            self.POLICY.allow_sl = 10;
+            self.POLICY.set_sl = resp.new_onion.private;
+        }
+        if(resp.new_master_pw) {
+            self.master_pw = resp.new_master_pw;
+        }
+    };
+
+    // deep-link to open accordion section
+    let hh = window.location.hash;
+    if(hh && hh.length>1) {
+        $('#' + hh.substr(1)).accordion('open');
+    }
+  },
+})
+</script>
+
+
+{% endblock %}
