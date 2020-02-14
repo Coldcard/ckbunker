@@ -1,5 +1,7 @@
 # <i>CK Bunker</i>
 
+Vist [Github repo for CK-Bunker](https://github.com/Coldcard/ck-bunker).
+
 ## What is the Coinkite Bunker?
 
 It's a python program that you run on a computer attached to a
