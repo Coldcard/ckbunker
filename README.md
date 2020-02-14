@@ -116,3 +116,11 @@ You will need:
 - a Tor-capable brwoser, like "Tor Browser" or Tails.
 - (optional) a microSD card, for logging of transactions on Coldcard
 
+
+## Example use cases
+
+### Sign small transactions with just a password
+
+You can set a password and have your ColdCard sign anything below a custom amount provided you enter that password.
+Or instead require you to type a pin into the ColdCard for verification. [6102](https://twitter.com/6102bitcoin/status/1228425672827293696)
+
