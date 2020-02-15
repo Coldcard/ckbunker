@@ -148,7 +148,11 @@ You can disable PSBT signing completely and allow automatic signatures on text m
 ~400 bytes of  secret storage in the Mk3 secure element. CK Bunker uses this to hold secret that encrypts bunker's settings (when at rest) such as the private key for  Hidden Service (= Tor address). So corrupt LEA can't impersonate your bunker after capture. [DocHex](https://twitter.com/DocHex/status/1228398842313310208)
 
 
+## FAQ
 
+### Will HSM mode be supported on Mk1 or Mk2[?](https://twitter.com/orcitis/status/1228418529302433792)
+
+Sorry no. Only works on Mk3 because we need the RAM and also newer features of 608a
 
 
 
