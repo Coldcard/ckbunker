@@ -124,3 +124,31 @@ You will need:
 You can set a password and have your ColdCard sign anything below a custom amount provided you enter that password.
 Or instead require you to type a pin into the ColdCard for verification. [6102](https://twitter.com/6102bitcoin/status/1228425672827293696)
 
+### Geographic separation
+
+Advanced: Your coldcard could be in another country; you can lock Coldcard (boot-to-HSM™ feature). Remote hands can do power cycles if needed & keep bunker running.  Video-conference w/ them to send  6-digit code to complete PSBT auth (entered on Coldcard keypad). [DocHex](https://twitter.com/DocHex/status/1228392653592649728)
+
+### Freeze your warm wallet
+
+The HSM policy on your Coldcard could enable spending to just one single cold-storage address (via whitelist). When your warm wallet is in danger, pull this cord to collect all UTXO and send them to safety, signed, unattended, by the COLDCARDwallet
+[DocHex](https://twitter.com/DocHex/status/1228394738841157632)
+
+### Meet-me-in-the-Bunker™
+
+Time-based 2FA code from the phones of 3 of these 5 executives needed to authorize spending; Each exec connects to Bunker at same time, views proposed txn and adds their OTP code. Only the Coldcard and exec's phone knows the shared 2FA secret. [DocHex](https://twitter.com/DocHex/status/1228395590662397953)
+·
+
+### Text message signing
+
+You can disable PSBT signing completely and allow automatic signatures on text messages. Makes @COLDCARDwallet
+ into an HSM for Bitcoin-based auth/attestations. Can be limited to specific BIP32 subpath derivations. Same w/  address generation/derived XPUBS. [DocHex](https://twitter.com/DocHex/status/1228396805102194688)
+ 
+### Storage Locker™
+
+~400 bytes of  secret storage in the Mk3 secure element. CK Bunker uses this to hold secret that encrypts bunker's settings (when at rest) such as the private key for  Hidden Service (= Tor address). So corrupt LEA can't impersonate your bunker after capture. [DocHex](https://twitter.com/DocHex/status/1228398842313310208)
+
+
+
+
+
+
