@@ -121,38 +121,42 @@ You will need:
 
 ### Sign small transactions with just a password
 
-You can set a password and have your ColdCard sign anything below a custom amount provided you enter that password.
-Or instead require you to type a pin into the ColdCard for verification. [6102](https://twitter.com/6102bitcoin/status/1228425672827293696)
+You can set a password and have your Coldcard sign anything below a custom amount provided you enter that password.
+Or instead require you to type a pin into the Coldcard for verification. [6102](https://twitter.com/6102bitcoin/status/1228425672827293696)
+
 
 ### Geographic separation
 
-Advanced: Your coldcard could be in another country; you can lock Coldcard (boot-to-HSM™ feature). Remote hands can do power cycles if needed & keep bunker running.  Video-conference w/ them to send  6-digit code to complete PSBT auth (entered on Coldcard keypad). [DocHex](https://twitter.com/DocHex/status/1228392653592649728)
+Advanced: Your Coldcard could be in another country; you can lock Coldcard (boot-to-HSM™ feature). Remote hands can do power cycles if needed & keep Bunker running.  Video-conference with them to send  6-digit code to complete a PSBT authentication (entered on Coldcard keypad). [DocHex](https://twitter.com/DocHex/status/1228392653592649728)
+
 
 ### Freeze your warm wallet
 
-The HSM policy on your Coldcard could enable spending to just one single cold-storage address (via whitelist). When your warm wallet is in danger, pull this cord to collect all UTXO and send them to safety, signed, unattended, by the COLDCARDwallet
+The HSM policy on your Coldcard could enable spending to just one single cold-storage address (via a whitelist). When your warm wallet is in danger, pull this cord to collect all UTXOs and send them to safety, signed, unattended, by the COLDCARDwallet
 [DocHex](https://twitter.com/DocHex/status/1228394738841157632)
 
 ### Meet-me-in-the-Bunker™
 
-Time-based 2FA code from the phones of 3 of these 5 executives needed to authorize spending; Each exec connects to Bunker at same time, views proposed txn and adds their OTP code. Only the Coldcard and exec's phone knows the shared 2FA secret. [DocHex](https://twitter.com/DocHex/status/1228395590662397953)
+Time-based 2FA code from the phones of 3 of these 5 executives needed to authorize spending; Each exec connects to Bunker at the same time, checks proposed transaction and adds their OTP code. Only the Coldcard and exec's phone knows the shared 2FA secret. [DocHex](https://twitter.com/DocHex/status/1228395590662397953)
 ·
 
 ### Text message signing
 
-You can disable PSBT signing completely and allow automatic signatures on text messages. Makes @COLDCARDwallet
- into an HSM for Bitcoin-based auth/attestations. Can be limited to specific BIP32 subpath derivations. Same w/  address generation/derived XPUBS. [DocHex](https://twitter.com/DocHex/status/1228396805102194688)
+You can disable PSBT signing completely and allow automatic signatures on text messages. This turn the Coldcard wallet
+ into an HSM for Bitcoin-based auth/attestations. Can be limited to specific BIP32 subpath derivations. Same with address generation/derived XPUBS. [DocHex](https://twitter.com/DocHex/status/1228396805102194688)
+ 
  
 ### Storage Locker™
 
-~400 bytes of  secret storage in the Mk3 secure element. CK Bunker uses this to hold secret that encrypts bunker's settings (when at rest) such as the private key for  Hidden Service (= Tor address). So corrupt LEA can't impersonate your bunker after capture. [DocHex](https://twitter.com/DocHex/status/1228398842313310208)
+There is a locker of about 400 bytes of secret storage in the Mk3 secure element. CK Bunker uses this to hold the secret that encrypts bunker's settings (when at rest), such as the private key for the address of the Tor hidden service. So a corrupt LEA <!-- what is LEA? --> can't impersonate your bunker after capture. [DocHex](https://twitter.com/DocHex/status/1228398842313310208)
 
 
 ## FAQ
 
 ### Will HSM mode be supported on Mk1 or Mk2[?](https://twitter.com/orcitis/status/1228418529302433792)
 
-Sorry no. Only works on Mk3 because we need the RAM and also newer features of 608a
+Sorry no. CK Bunker only works on Mk3 because we need the extra RAM and the newer features of the 608a secure element.
 
+### What is HSM?
 
-
+Hardware Security Module
