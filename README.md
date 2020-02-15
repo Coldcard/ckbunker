@@ -150,6 +150,10 @@ You can disable PSBT signing completely and allow automatic signatures on text m
 
 There is a locker of about 400 bytes of secret storage in the Mk3 secure element. CK Bunker uses this to hold the secret that encrypts bunker's settings (when at rest), such as the private key for the address of the Tor hidden service. So a corrupt LEA <!-- what is LEA? --> can't impersonate your bunker after capture. [DocHex](https://twitter.com/DocHex/status/1228398842313310208)
 
+### Multsig
+
+Heard you like co-signing! All the Bunker/HSM features work with multisig (P2SH / P2WSH) so maybe you're automatically co-signing some complex multisig from a CasaHODL quorum. [DocHex](https://twitter.com/DocHex/status/1228403787955687427)
+
 
 ## FAQ
 
