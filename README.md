@@ -4,6 +4,8 @@
 
 Vist [Github repo for CKBunker](https://github.com/Coldcard/ck-bunker).
 
+[CK-Bunker preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
+
 ## What is the Coinkite Bunker?
 
 "Basically the cost of a Bitcoin [HSM](#what-is-hsm) with custom policies is now the cost of a coldcard and you don't need a thirty party to maintain it." - Francis P.
