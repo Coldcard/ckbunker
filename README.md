@@ -4,6 +4,8 @@
 
 Vist [Github repo for CKBunker](https://github.com/Coldcard/ck-bunker).
 
+[CK-Bunker preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
+
 ## What is the Coinkite Bunker?
 
 "Basically the cost of a Bitcoin [HSM](#what-is-hsm) with custom policies is now the cost of a coldcard and you don't need a thirty party to maintain it." - Francis P.
@@ -124,6 +126,21 @@ You will need:
 You can set a password and have your Coldcard sign anything below a custom amount provided you enter that password.
 Or instead require you to type a pin into the Coldcard for verification. [6102](https://twitter.com/6102bitcoin/status/1228425672827293696)
 
+### 2/2 multisig with geographic separation and specific spending rules
+
+You can use another Coldcard and program it to make sure no transactions get through that don't adhere to a set of rules you set in advance. This uses 2/2 multisig (meaning your regular wallet is the first and the Coldcard is the second, both needed to send any transaction).
+
+Your regular wallet will sign any transaction you send, but the Coldcard is like a security guard that won't also sign the transaciton unless it follows the rules you set. Rules can include where the bitcoins go (so if an attacker tries to steal your BTC using your main wallet, the Coldcard won't sign).
+
+Rules could also include a time of day or a max amount per day (or any other period of time). For a long-term hodl you might not want to let anyone be able to send the whole amount at once.
+
+What's cool is that this Coldcard could be located anywhere in the world and still sign your transaction.
+
+Because we give the Coldcard a set of rules we can let it execute automatically and sign any transaction that your main wallet presents, as long as the transaction follows whatever rules you set. An attacker would have to nab both your main wallet and the Coldcard (and possibly even reprogram the CC).
+
+While a geographically distributed 2/2 multi-sig is already possible today, it would require someone on the other end to click the buttons and co-sign. As this is pre-programmed it can run automatically and sign any TX within the rules.
+
+[Ben Prentice](https://twitter.com/mrcoolbp/status/1228868296486924289)
 
 ### Geographic separation
 
@@ -153,6 +170,8 @@ There is a locker of about 400 bytes of secret storage in the Mk3 secure element
 ### Multsig
 
 Heard you like co-signing! All the Bunker/HSM features work with multisig (P2SH / P2WSH) so maybe you're automatically co-signing some complex multisig from a CasaHODL quorum. [DocHex](https://twitter.com/DocHex/status/1228403787955687427)
+
+
 
 
 ## FAQ
