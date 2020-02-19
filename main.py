@@ -9,7 +9,7 @@
 #
 #   pip install --editable .
 #
-# That will create the command "ck-bunker" in your path.
+# That will create the command "ckbunker" in your path. Use it!
 #
 import os, sys, click, hid, asyncio, logging
 from pprint import pformat, pprint
@@ -60,7 +60,7 @@ def example_config():
                         type=click.File('rb'))
 @click.option('--config-file', '-c', type=click.File('rt'), required=False)
 def start_service(local=False, config_file=None, psbt=None):
-    "Start the CK-Bunker for normal operation"
+    "Start the CKBunker for normal operation"
 
     if psbt:
         psbt = psbt.read()

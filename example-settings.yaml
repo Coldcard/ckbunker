@@ -2,7 +2,7 @@
 #
 # Usage:
 #
-#   ck-bunker setup -c example-settings.yaml
-#   ck-bunker run -c example-settings.yaml
+#   ckbunker setup -c example-settings.yaml
+#   ckbunker run -c example-settings.yaml
 #
 PORT_NUMBER: 9800

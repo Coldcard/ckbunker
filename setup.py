@@ -16,7 +16,7 @@ setup(
     name='bunker',
     version='0.1',
     python_requires='>=3.7.0',
-    url='https://github.com/Coldcard/ck-bunker',
+    url='https://github.com/Coldcard/ckbunker',
     author='Coinkite Inc.',
     author_email='support@coinkite.com',
     description="Submit PSBT files automatically to your Coldcard for signing",
@@ -31,7 +31,7 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        ck-bunker=main:main
+        ckbunker=main:main
     ''',
     classifiers=[
         'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',

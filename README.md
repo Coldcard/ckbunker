@@ -1,10 +1,10 @@
 # <i>CK Bunker</i>
 
-![](https://github.com/Coldcard/ck-bunker/blob/master/static/screen-shot.jpg)
+![](https://github.com/Coldcard/ckbunker/blob/master/static/screen-shot.jpg)
 
-Vist [Github repo for CKBunker](https://github.com/Coldcard/ck-bunker).
+[Github repo for CKBunker](https://github.com/Coldcard/ckbunker).
 
-[CK-Bunker preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
+[CKBunker preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
 
 ## What is the Coinkite Bunker?
 
@@ -41,7 +41,7 @@ with the latest updates and security alerts.
 
 Do a checkout, recursively to get all the submodules:
 
-    git clone --recursive https://github.com/Coldcard/ck-bunker.git
+    git clone --recursive https://github.com/Coldcard/ckbunker.git
 
 Then:
 
@@ -52,11 +52,11 @@ Then:
 
 ## Usage
 
-The executable is called `ck-bunker`:
+The executable is called `ckbunker`:
 
 ```sh
-$ ck-bunker --help
-Usage: ck-bunker [OPTIONS] COMMAND [ARGS]...
+$ ckbunker --help
+Usage: ckbunker [OPTIONS] COMMAND [ARGS]...
 
 Options:
   -s, --serial HEX  Operate on specific unit (default: first found)
@@ -65,7 +65,7 @@ Options:
 Commands:
   list     List all attached Coldcard devices
   example  Show an example config file, using the default values
-  run      Start the CK-Bunker for normal operation
+  run      Start the CKBunker for normal operation
   setup    Configure your transaction signing policy, install it and then...
 ```
 
@@ -76,7 +76,7 @@ You would typically use the setup mode for picking the onion address, the
 master login password and all the details of the HSM policy.
 
 ```sh
-$ ck-bunker setup
+$ ckbunker setup
 ```
 
 Open this URL in your local web browser (must be same machine):
@@ -86,14 +86,14 @@ Once the Coldcard is running in HSM mode, with your policy installed,
 it makes sense to operate in normal "run" mode:
 
 ```sh
-$ ck-bunker run
+$ ckbunker run
 ```
 
 You may also run with remote connections (and login) disabled. This would be useful
 if you have some existing web proxy already in place.
 
 ```sh
-$ ck-bunker --local run
+$ ckbunker --local run
 ```
 
 ## Tor Use
@@ -101,7 +101,7 @@ $ ck-bunker --local run
 To access over Tor as a hidden service, you must have `tord` running
 on the same machine. For desktop systems, keeping TorBrowser open
 is enough to acheive this. On servers, start tord with default options,
-and ck-bunker will use the control port (localhost port 9051 or 9151).
+and ckbunker will use the control port (localhost port 9051 or 9151).
 
 If you use the bunker to broadcast the final (signed) transaction,
 the socks proxy of tord (port 9050) will also be used.
