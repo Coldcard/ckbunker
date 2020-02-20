@@ -2,9 +2,9 @@
 
 ![](/static/screen-shot.jpg)
 
-- [CKBunker Docs](https://coldcardwallet.com/docs/ckbunker-hsm)
-- [Github repo for CKBunker](https://github.com/Coldcard/ckbunker).
-- [CKBunker preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
+- [Docs](https://coldcardwallet.com/docs/ckbunker-hsm)
+- [Github repository](https://github.com/Coldcard/ckbunker)
+- [Preview screencast](https://www.youtube.com/watch?v=0bHhZbYOiSM)
 
 ## What is the Coinkite Bunker?
 
