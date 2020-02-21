@@ -10,12 +10,12 @@ psbt.md
 
 ## Full Documentation
 
-1. [Installation](docs/install.md)
-2. [Setup Bunker](docs/setup.md)
-2. [HSM Policy](docs/policy.md)
-2. [PSBT Signing](docs/psbt.md)
-2. [Message Signing](docs/msg-signing.md)
-2. [Contributing Code](docs/hacking.md) 
+1. [Installation](https://github.com/Coldcard/ckbunker/blob/master/docs/install.md)
+2. [Setup Bunker](https://github.com/Coldcard/ckbunker/blob/master/docs/setup.md)
+2. [HSM Policy](https://github.com/Coldcard/ckbunker/blob/master/docs/policy.md)
+2. [PSBT Signing](https://github.com/Coldcard/ckbunker/blob/master/docs/psbt.md)
+2. [Message Signing](https://github.com/Coldcard/ckbunker/blob/master/docs/msg-signing.md)
+2. [Contributing Code](https://github.com/Coldcard/ckbunker/blob/master/docs/hacking.md) 
 
 ## What is the Coinkite Bunker?
 
