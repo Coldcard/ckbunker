@@ -3,7 +3,7 @@
 ![Screen Shot of CKBunker](docs/screen-shot.jpg)
 
 - [CKBunker preview screencast (youtube)](https://www.youtube.com/watch?v=0bHhZbYOiSM)
-- [Usage examples](examples.md) for HSM/CKBunker.
+- [Usage examples](https://github.com/Coldcard/ckbunker/blob/master/docs/examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker).
 psbt.md
