@@ -63,13 +63,13 @@ your Coldcard's wallets.
 
 # Code Submission Guidelines
 
-PR's are accepted but...
+PR's are welcome but...
 
 - Please think of other users: don't remove existing use cases.
 - Don't add weird dependancies if easy to avoid.
 - Try to match existing coding style.
 - Large diffs are hard to accept with security-sensitive projects like this.
-- Please start your own fork and own it... we love that too!
+- Feel free to start your own fork and own it... we love that too!
 
 
 
