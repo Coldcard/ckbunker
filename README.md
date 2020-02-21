@@ -6,7 +6,6 @@
 - [Usage examples](https://github.com/Coldcard/ckbunker/blob/master/docs/examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker).
-psbt.md
 
 ## Full Documentation
 
