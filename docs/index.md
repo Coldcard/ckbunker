@@ -6,6 +6,7 @@
 - [Usage examples](examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker)
+- [HSM Feature (on Coldcard) Docs](https://coldcardwallet.com/docs/ckbunker-hsm)
 
 ## Full Documentation
 
