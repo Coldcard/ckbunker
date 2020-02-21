@@ -121,7 +121,7 @@ async def tools_page(request):
     # - message signing useul tho
     if BP.get('policy'):
         paths = BP['policy'].get('msg_paths') or []
-        paths = set(i.replace('*', '999') for i in paths if i != 'any')
+        paths = set(i.replace('*', '999') for i in paths)
     else:
         # priv_over_ux: we don't know, but some useful ones
         paths = ['m', "m/0/0", "m/44'/0'/0'/0/0", "m/49'/0'/0'/0/0", 
