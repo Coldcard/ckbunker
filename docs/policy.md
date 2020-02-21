@@ -231,4 +231,23 @@ This is simply free-form text shown on the Coldcard when approving HSM Policy.
 Up to 80 characters allowed. You could put the master password and/or
 onion address here for documentation purposes.
 
+# Save and Start Policy
+
+When you are happy with your HSM policy, press "Save and Start
+Policy". You may want to capture a copy of the settings for later
+use. The CKBunker does not save the details (but may same a text
+summary) so it cannot re-create the policy rules completely.  Coldcard
+saves the details but does not offer a means to share them later.
+
+Once you've hit the button, the attached Coldcard will prompt you for
+approval. You will get to see the policy as the Coldcard understands it,
+and you should read that careful to confirm it matches you intentions.
+
+After final approval, the HSM policy file is written into the
+Coldcard's flash memory and it enters HSM mode. On subsequent
+reboots, you will be prompted to start HSM mode on each time.
+
+# Next Steps
+
+[Signing a PSBT file](psbt.md)
 

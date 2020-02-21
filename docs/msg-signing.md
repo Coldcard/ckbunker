@@ -10,3 +10,6 @@ Base64 signature in standard form is provided. The address is underneath.
 Keep in mind when you share a signature, you are also sharing the public key for
 that address. This is more information than just a payment address.
 
+# Next Steps
+
+[Contributing code](hacking.md)

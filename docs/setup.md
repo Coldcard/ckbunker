@@ -125,3 +125,6 @@ re-encrypted and moved over.
 like the HSM text summary, user names, and other details that are know only
 when the policy is created.
 
+# Next Steps
+
+[HSM policy setup](policy.md)
