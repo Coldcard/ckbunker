@@ -1,6 +1,6 @@
 # <i>CK Bunker</i>
 
-![Screen Shot of CKBunker](/docs/screen-shot.jpg)
+![Screen Shot of CKBunker](screen-shot.jpg)
 
 - [CKBunker preview screencast (youtube)](https://www.youtube.com/watch?v=0bHhZbYOiSM)
 - [Usage examples](examples.md) for HSM/CKBunker.
