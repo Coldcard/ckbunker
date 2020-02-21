@@ -6,6 +6,9 @@
 - [Usage examples](examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker).
+psbt.md
+- Full docs: [Setup Your Bunker](setup.md), [PSBT Signing](psbt.md),
+  [Message Signing](msg-signing.md), [Contributing Code](hacking.md) 
 
 ## What is the Coinkite Bunker?
 

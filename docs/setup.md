@@ -35,9 +35,10 @@ By using the "Download Policy" button you can use the pretty web
 interface to build your policy file without using any other part
 of the CKBunker. In fact a Coldcard does not need to be connected.
 
-The only limitation of this mode is the _Users_ section. It communicates
+One limitation of this mode is the _Users_ section. It communicates
 directly with the Coldcard to read the list of users and add/remove them.
-If you are using those features, you may need to edit the JSON.
+If you are using those features, you may need to edit the JSON. The same
+is true for the names of your multisig wallets.
 
 If you use the Bunker to upload your policy, the `allow_sl` and
 `set_sl` fields will be overriden by the Bunker and replaced. You
@@ -89,7 +90,10 @@ your PSBT file and all other web interactions while you work with the Bunker.
 However, they cannot change the HSM policy of the Coldcard. They
 do not know the TOTP/2FA secrets, and cannot generate OTP codes
 (only the Coldcard knows those) and so they cannot authorize spending
-that way and impersonate users.
+that way and impersonate users. If the attackers are remote, relative
+to the location of the Coldcard, the "local confirmation code" feature 
+will also protect you, since the attackers would need to convince
+your remote hands to enter a specific code.
 
 When the data associated with the Bunker is "at rest", meaning the
 system is not running, we have good protections in place. All Bunker
