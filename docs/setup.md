@@ -75,6 +75,13 @@ There are only a few settings for the Bunker itself:
     effect of that is the CKBunker can only be reset/started once without
     knowing the PIN of the Coldcard.
 
+# Login Screen
+
+For your reference, the login screen presented to visitors looks like this
+with the animated captcha.
+
+![login screen](img/snap-login.png)
+
 ### How Bunker Settings are Saved
 
 In our security model, we assume the CKBunker may be "captured" by
