@@ -11,7 +11,7 @@ and "Bunker Setup" tabs.
 
 ## Coldcard Setup tab
 
-![Coldcard Setup screen shot](cc-setup-tab.png)
+![Coldcard Setup screen shot](img/cc-setup-tab.png)
 
 "Coldcard Setup" is devoted to creating an HSM spending policy. These settings
 are held in a JSON file to be uploaded and confirmed on the Coldcard.
@@ -27,7 +27,7 @@ file will have the following sensitive fields stripped out:
 - `boot_to_hsm` - unlock code for
 - `set_sl`, `allow_sl` - details of the storage locker
 
-Continue reading [here for details about HSM rules and policy.](rules.md)
+Continue reading [here for details about HSM rules and policy.](policy.md)
 
 ### Using Coldcard Setup _without_ a Coldcard
 
@@ -47,7 +47,7 @@ and start HSM mode on the command line.
 
 ## Bunker Setup tab
 
-![Bunker Setup screen shot](bk-setup-tab.png)
+![Bunker Setup screen shot](img/bk-setup-tab.png)
 
 There are only a few settings for the Bunker itself:
 
@@ -61,11 +61,11 @@ There are only a few settings for the Bunker itself:
 
     -  Simple Captcha
 
-    ![simple captcha](simple-captcha.png)
+    ![simple captcha](img/simple-captcha.png)
 
     - Animated Captcha
 
-    ![animated captcha](animated-captcha.gif)
+    ![animated captcha](img/animated-captcha.gif)
 
 - "Allow Bunker to be restarted without requiring a restart of the Coldcard":
     This setting should be configured before you save and apply your HSM policy
