@@ -1,9 +1,10 @@
-# <i>CK Bunker</i>
+# <i>CKBunker</i>
 
 ![Screen Shot of CKBunker](screen-shot.jpg)
 
 - [CKBunker preview screencast (youtube)](https://www.youtube.com/watch?v=0bHhZbYOiSM)
 - [Usage examples](examples.md) for HSM/CKBunker.
+- [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker).
 
 ## What is the Coinkite Bunker?
@@ -115,18 +116,20 @@ the socks proxy of tord (port 9050) will also be used.
 You will need:
 
 - this code
-- a Mk3 Coldcard connected via USB
+- a Mk3 Coldcard connected via USB, running
+  [firmware version 3.1.0 or later](https://coldcardwallet.com/docs/upgrade)
 - `tord` (Tor program)
-- Internet connection
+- an Internet connection
 - a Tor-capable browser, like "Tor Browser" or Tails.
 - (optional) a microSD card, for logging of transactions on Coldcard
+- (optional, recommended) a mobile phone with TOTP 2FA app, like Google Authenticator or FreeOTP
 
 ## FAQ
 
 ### Will HSM mode be supported on Mk1 or Mk2?
 
 Sorry no. CK Bunker only works on Mk3 because we need the extra RAM
-and the newer features of the 608a secure element.
+and the newer features of the 608 secure element.
 
 ### What is HSM?
 
