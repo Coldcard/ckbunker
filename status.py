@@ -61,8 +61,10 @@ class SystemStatus(WatchableMixin, ObjectStruct):
         if not ul:
             if BP.get('policy'):
                 ul = set()
-                for r in BP['policy'].rules:
-                    ul.union(r.users)
+                try:
+                    for r in BP['policy']['rules']:
+                        ul.union(r.users)
+                except KeyError: pass
                 ul = list(sorted(ul))
 
         # they might have picked privacy over UX, so provide some "slots"

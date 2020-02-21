@@ -27,15 +27,22 @@ def web_cleanup(p):
 
     p.period = int(p.period) if p.period else None
 
-    for rule in p.rules:
+    for idx, rule in enumerate(p.rules):
         for fn in ['whitelist', 'users']:
             rule[fn] = relist(rule[fn])
 
         # change from BTC to satoshis (send as string here)
         for fn in ['per_period', 'max_amount']:
-            if rule[fn] is not None:
-                v = Decimal(rule[fn])
+            v = rule.get(fn, None) or None
+            if v is not None:
+                try:
+                    v = Decimal(v)
+                except:
+                    raise ValueError(f"Rule #{idx+1} field {fn} is invalid: {rule[fn]}")
                 rule[fn] = int(v * Decimal('1E8'))
+            else:
+                # cleans up empty strings
+                rule[fn] = None
 
         # text to number
         if not rule.users:
