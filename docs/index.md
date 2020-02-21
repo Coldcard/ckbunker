@@ -5,7 +5,7 @@
 - [CKBunker preview screencast (youtube)](https://www.youtube.com/watch?v=0bHhZbYOiSM)
 - [Usage examples](examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
-- [Github for CKBunker](https://github.com/Coldcard/ckbunker).
+- [Github for CKBunker](https://github.com/Coldcard/ckbunker)
 
 ## Full Documentation
 
