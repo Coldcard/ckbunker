@@ -62,7 +62,7 @@
         @click.prevent="sign_message_btn"
         :class="{disabled: !msg_text.length || !signing_path.length || !STATUS.connected, loading: busy_signing}"
     ><i class="pencil alternate icon"></i> Sign Message</button>
-    {{ needs_coldcard_callout('top') }}
+    {{ needs_coldcard_callout('left') }}
   </div>
 
 
