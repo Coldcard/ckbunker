@@ -115,12 +115,9 @@ it reads the storage locker and uses the NaCl private key (32 bytes)
 to select and open the corresponding Bunker settings file. Therefore,
 each Coldcard has it's own settings for the Bunker. 
 
-Before a Coldcard is connected, or before the policy is saved for
-the first time, the settings are held with a fixed key, and end up
-in file: `data/bp-1850f665aa1e22c0.dat` based on that key. At the
-point where you upload a new policy to a Coldcard, a new key is
-picked and added to the policy file. Data on disk at that point is
-re-encrypted and moved over.
+In setup mode, bunker settings are effectively not saved until
+the NaCL secret is saved into the policy of a Coldcard and saved
+there.
 
 
 #### Other Notes

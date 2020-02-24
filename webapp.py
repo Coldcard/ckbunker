@@ -480,9 +480,10 @@ async def ws_api_handler(ses, send_json, req, orig_request):     # handle_api
 
         if not BP['tor_enabled']:
             await TOR.stop_tunnel()
-        elif BP.get('onion_pk') and not (STATUS.force_local_mode or STATUS.setup_mode):
-            # connect/reconnect
-            await TOR.start_tunnel()
+        elif BP.get('onion_pk') and not (STATUS.force_local_mode or STATUS.setup_mode) \
+            and TOR.get_current_addr() != BP.get('onion_addr'):
+                # disconnect/reconnect
+                await TOR.start_tunnel()
 
     elif action == 'sign_message':
         # sign a short text message

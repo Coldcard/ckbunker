@@ -149,6 +149,12 @@ class Connection(metaclass=Singleton):
             logging.info(f"Starting hidden service: %s" % BP['onion_addr'])
             asyncio.create_task(TOR.start_tunnel())
 
+        h = STATUS.hsm
+        if ('summary' in h) and h.summary and not BP.get('priv_over_ux') and not BP.get('summary'):
+            logging.info("Captured CC's summary of the policy")
+            BP['summary'] = h.summary
+            BP.save()
+
         STATUS.reset_pending_auth()
         STATUS.notify_watchers()
 
@@ -194,11 +200,6 @@ class Connection(metaclass=Singleton):
         else:
             # won't be required
             STATUS.local_code = None
-
-        if ('summary' in h) and h.summary and not BP.get('priv_over_ux') and not BP.get('summary'):
-            logging.info("Captured CC's summary of the policy")
-            BP['summary'] = h.summary
-            BP.save()
 
         # has it just transitioned into HSM mode?
         if STATUS.connected and STATUS.hsm.active and not b4:

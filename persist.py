@@ -39,10 +39,6 @@ class Settings(metaclass=Singleton):
     # path to data files
     DATA_FILES = './data'
 
-    # used during secret/when we don't have a key yet
-    # - maps to data/bp-1850f665aa1e22c0.dat
-    PLACEHOLDER_KEY = b'ab'*16
-
     # endpoint to use for sending txn; we assume it's Explora protocol (Blockstream.info)
     EXPLORA = 'http://explorerzydxu5ecjrkwceayqybizmpjjznk5izmitf2modhcusuqlid.onion'
 
@@ -111,12 +107,13 @@ class BunkerPersistance(WatchableMixin, dict, metaclass=Singleton):
 
     def __init__(self):
         super(BunkerPersistance, self).__init__()
-        self.key = None
         self.filename = None
-        self.set_defaults()
+        self.reset()
 
     def reset(self):
-        self.open(settings.PLACEHOLDER_KEY)
+        self.clear()
+        self.set_secret(os.urandom(32))
+        self.set_defaults()
 
     def set_defaults(self):
         # defaults here
@@ -134,11 +131,6 @@ class BunkerPersistance(WatchableMixin, dict, metaclass=Singleton):
         # calc filename
         bn = 'bp-%s.dat' % sha256(sha256(b'salty' + self.key).digest()).hexdigest()[-16:].lower()
         self.filename =  os.path.join(settings.DATA_FILES, bn)
-
-    @staticmethod
-    def new_secret():
-        # rotate key
-        return os.urandom(32)
 
     def open(self, key):
         # Given a private key (via storage locker) open a Nacl secret box
@@ -181,9 +173,6 @@ class BunkerPersistance(WatchableMixin, dict, metaclass=Singleton):
             logging.info(f"Deleted bunker settings in: {self.filename}")
         except:
             pass
-
-    def is_default_secret(self):
-        return self.key == settings.PLACEHOLDER_KEY
 
 
 # EOF

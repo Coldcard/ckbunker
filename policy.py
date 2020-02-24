@@ -129,13 +129,8 @@ def update_sl(proposed):
             xk = None
 
     if not xk:
-        if not BP.key or BP.is_default_secret():
-            # pick a new key
-            logging.info("Making new secret for holding Bunker settings")
-            xk = BP.new_secret()
-        else:
-            # keep using same key
-            xk = BP.key
+        # capture settings key
+        xk = BP.key
 
         assert len(xk) == 32
         proposed['set_sl'] = b64encode(b'Bunk' + xk).decode('ascii')
