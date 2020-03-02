@@ -224,11 +224,11 @@ set _Do not accept any code_, and the Coldcard can never leave HSM mode.
     Not even the master PIN holder can change HSM policy nor escape HSM
     mode! Firmware upgrades are not possible.
 
-Boot-to-HSM is mainly useful mainly if the local operator of the
-card does not have the authority to spend the funds, but does know
-the PIN code. In most applications, we expect someone with PIN
-knowledge and also the spending authority to power-up and enable
-HSM mode.
+Boot-to-HSM is mainly useful mainly if the local operator does not
+have the authority to spend the funds, but does know the PIN code
+so they can assist with powerfail restart. In most applications, we
+expect someone with PIN knowledge and also the spending authority
+to power-up and enable HSM mode.
 
 ## Notes
 
