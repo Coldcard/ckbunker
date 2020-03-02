@@ -213,9 +213,9 @@ after boot up (after entry of the master PIN).
 
 You specify a 6-digit numeric code and if that code is provided in
 the first 30 seconds after startup, the Coldcard will leave HSM
-mode. (The HSM policy file is erased in this process.) Alternatively,
-you may set _Do not accept any code_, and the Coldcard can never
-leave HSM mode.
+mode. (The HSM policy file is erased in this process, and the
+Red/green LED will be left as Red.) Alternatively, you may
+set _Do not accept any code_, and the Coldcard can never leave HSM mode.
 
 !!! warning "Bricking Hazard"
 
@@ -224,6 +224,11 @@ leave HSM mode.
     Not even the master PIN holder can change HSM policy nor escape HSM
     mode! Firmware upgrades are not possible.
 
+Boot-to-HSM is mainly useful mainly if the local operator of the
+card does not have the authority to spend the funds, but does know
+the PIN code. In most applications, we expect someone with PIN
+knowledge and also the spending authority to power-up and enable
+HSM mode.
 
 ## Notes
 
