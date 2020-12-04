@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
-# (c) Copyright 2020 by Coinkite Inc. This file is part of Coldcard <coldcardwallet.com>
-# and is covered by GPLv3 license found in COPYING.
+# Copyright 2020 by Coinkite Inc. This file is covered by license found in COPYING-CC.
 #
 # Main entry-point for project.
 #

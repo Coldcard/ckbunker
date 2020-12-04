@@ -1,5 +1,4 @@
-# (c) Copyright 2020 by Coinkite Inc. This file is part of Coldcard <coldcardwallet.com>
-# and is covered by GPLv3 license found in COPYING.
+# Copyright 2020 by Coinkite Inc. This file is covered by license found in COPYING-CC.
 #
 # based on <http://click.pocoo.org/5/setuptools/#setuptools-integration>
 #
@@ -15,6 +14,7 @@ with open("README.md", "r") as fh:
 setup(
     name='bunker',
     version='0.1',
+    license='MIT+CC',
     python_requires='>=3.7.0',
     url='https://github.com/Coldcard/ckbunker',
     author='Coinkite Inc.',
@@ -34,7 +34,6 @@ setup(
         ckbunker=main:main
     ''',
     classifiers=[
-        'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
         'Operating System :: POSIX :: Linux',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS :: MacOS X',

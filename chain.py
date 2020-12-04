@@ -1,5 +1,4 @@
-# (c) Copyright 2020 by Coinkite Inc. This file is part of Coldcard <coldcardwallet.com>
-# and is covered by GPLv3 license found in COPYING.
+# Copyright 2020 by Coinkite Inc. This file is covered by license found in COPYING-CC.
 #
 # chain.py --- API to blockstream stuff
 #
