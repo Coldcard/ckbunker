@@ -53,7 +53,7 @@ considering the rule.
 
 If no rules are defined, then no PSBT will be signed. This can be
 useful for text message signing applications. On the other hand,
-an empty rule, allows any transaction to be signed, so be careful!
+a single empty rule, allows any transaction to be signed, so be careful!
 
 ### Max Transaction Amount 
 
