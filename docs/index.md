@@ -3,6 +3,8 @@
 ![Screen Shot of CKBunker](screen-shot.jpg)
 
 - [CKBunker preview screencast (youtube)](https://www.youtube.com/watch?v=0bHhZbYOiSM)
+- [Video: How To Use CKBUNKER Part 1: Install + Setup](https://www.youtube.com/watch?v=UVcnVb41NWQ)
+- [Video: How To Use CKBUNKER Part 2: Multi-Sig Policy](https://www.youtube.com/watch?v=_Jc7sLTT6ls)
 - [Usage examples](examples.md) for HSM/CKBunker.
 - [Documentation Website](https://ckbunker.com)
 - [Github for CKBunker](https://github.com/Coldcard/ckbunker)
@@ -67,3 +69,4 @@ Learn more about the [Coldcard in HSM Mode](https://coldcardwallet.com/docs/ckbu
 
 > "Basically the cost of a Bitcoin HSM with custom policies is now the cost of a coldcard and you don't need a thirty party to maintain it." - Francis P.
 
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/UVcnVb41NWQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
