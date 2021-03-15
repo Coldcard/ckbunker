@@ -212,9 +212,8 @@ This feature forces the Coldcard to start in HSM mode immediately
 after boot up (after entry of the master PIN).
 
 You specify a 6-digit numeric code and if that code is provided in
-the first 30 seconds after startup, the Coldcard will leave HSM
-mode. (The HSM policy file is erased in this process, and the
-Red/green LED will be left as Red.) Alternatively, you may
+the first 60 seconds after startup, the Coldcard will leave HSM
+mode. Alternatively, you may
 set _Do not accept any code_, and the Coldcard can never leave HSM mode.
 
 !!! warning "Bricking Hazard"
