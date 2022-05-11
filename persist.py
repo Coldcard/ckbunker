@@ -56,6 +56,20 @@ class Settings(metaclass=Singleton):
     # delay between retries connecting to missing/awol Coldcard
     RECONNECT_DELAY = 10        # seconds between retries
     PING_RATE = 15              # seconds between pings (CC status checks)
+    USB_NCRY_VERSION = 0x01     # default ncry version is 1
+
+    # USB encryption versions (default 1)
+    #
+    # V2 introduces a new ncry version to close a potential attack vector:
+    #
+    # A malicious program may re-initialize the connection encryption by sending the ncry command a second time during USB operation.
+    # This may prove particularly harmful in HSM mode.
+    #
+    # Sending version 0x02 changes the behavior in two ways:
+    #   * All future commands must be encrypted
+    #   * Returns an error if the ncry command is sent again for the duration of the power cycle
+    #
+    # If using 0x02 and ckbunker is killed - you also need to re-login to Coldcard
 
     def read(self, fobj):
         t = yaml.safe_load(fobj)

@@ -13,9 +13,10 @@ from hmac import HMAC
 from hashlib import sha256
 from concurrent.futures import ThreadPoolExecutor
 
-from ckcc.protocol import CCProtocolPacker, CCProtocolUnpacker, CCFramingError
-from ckcc.protocol import CCProtoError, CCUserRefused, CCBusyError
-from ckcc.client import ColdcardDevice, COINKITE_VID, CKCC_PID
+from ckcc.protocol import CCProtocolPacker, CCFramingError
+from ckcc.protocol import CCProtoError, CCUserRefused
+from ckcc.constants import USB_NCRY_V2
+from ckcc.client import ColdcardDevice
 from ckcc.constants import (USER_AUTH_TOTP, USER_AUTH_HMAC, USER_AUTH_SHOW_QR, MAX_USERNAME_LEN)
 from ckcc.utils import calc_local_pincode
 
@@ -52,8 +53,9 @@ class Connection(metaclass=Singleton):
                 else:
                     sn = self.serial
 
-                d = ColdcardDevice(sn=sn)
-                logging.info(f"Found Coldcard {d.serial}.")
+                ncry_ver = settings.USB_NCRY_VERSION
+                d = ColdcardDevice(sn=sn, ncry_ver=ncry_ver)
+                logging.info(f"Found Coldcard {d.serial}. USB encryption version: {ncry_ver}")
 
                 await asyncio.get_running_loop().run_in_executor(executor, d.check_mitm)
 
