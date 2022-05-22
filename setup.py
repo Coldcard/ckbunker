@@ -27,7 +27,7 @@ setup(
         'stem',
         'aiohttp',
         'aiohttp-jinja2',
-        'ckcc-protocol>=1.0.0',
+        'ckcc-protocol>=1.3.2',
     ],
     entry_points='''
         [console_scripts]

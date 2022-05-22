@@ -20,7 +20,10 @@ from persist import settings, BP
 from hashlib import sha256
 from chain import broadcast_txn
 from version import VERSION
-from jinja2 import Markup
+try:
+    from jinja2 import Markup
+except ImportError:
+    from markupsafe import Markup
 import policy
 
 from ckcc.constants import USER_AUTH_TOTP, USER_AUTH_HMAC, USER_AUTH_SHOW_QR, MAX_USERNAME_LEN
