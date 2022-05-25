@@ -128,6 +128,10 @@ there.
   policy are captured and saved into the encrypted settings. This includes details
 like the HSM text summary, user names, and other details that are know only
 when the policy is created.
+- USB Encryption should be set to version 2 if firmware supports this <some links to supported firmware>. 
+  For now default version is still 1. To enable version 2:
+  `echo "USB_NCRY_VERSION: 2" > /tmp/ckbunker_ncryV2.yaml; ckbunker setup -c /tmp/ckbunker_ncryV2.yaml`. With version 2
+  enabled, in case of any ckbunker or communication failure, one needs to re-login to Coldcard
 
 # Next Steps
 
