@@ -28,6 +28,11 @@ setup(
         'aiohttp',
         'aiohttp-jinja2',
         'ckcc-protocol>=1.3.2',
+        'pyyaml',
+        'pynacl==1.3.0',
+        'pendulum==2.0.3',
+        'aiohttp_session',
+        'requests[socks]',
     ],
     entry_points='''
         [console_scripts]
@@ -38,5 +43,5 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS :: MacOS X',
     ],
+    packages=[],
 )
-
