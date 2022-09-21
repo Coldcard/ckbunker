@@ -21,9 +21,9 @@ from hashlib import sha256
 from chain import broadcast_txn
 from version import VERSION
 try:
-    from jinja2 import Markup
+    from jinja2 import Markup, escape
 except ImportError:
-    from markupsafe import Markup
+    from markupsafe import Markup, escape
 import policy
 
 from ckcc.constants import USER_AUTH_TOTP, USER_AUTH_HMAC, USER_AUTH_SHOW_QR, MAX_USERNAME_LEN
@@ -326,7 +326,7 @@ async def rx_handler(ses, ws, orig_request):
 
         if failed:
             # standard error response
-            await tx_resp(show_modal=True, html=jinja2.escape(msg), selector='.js-api-fail')
+            await tx_resp(show_modal=True, html=escape(msg), selector='.js-api-fail')
 
 async def push_status_updates_handler(ws):
     # block for a bit, and then send display updates (and all other system status changes)
