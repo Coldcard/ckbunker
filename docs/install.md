@@ -18,7 +18,7 @@ Then:
 You will need:
 
 - this code (see above)
-- a Mk3 Coldcard connected via USB, running
+- a Mk3 or Mk4 Coldcard connected via USB, running
   [firmware version 3.1.0 or later](https://coldcardwallet.com/docs/upgrade)
 - `tord` (Tor program)
 - an Internet connection
