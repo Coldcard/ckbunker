@@ -2,7 +2,9 @@
 #
 # A web server.
 #
+import binascii
 import sys, os, asyncio, logging, aiohttp_jinja2, jinja2, time, weakref, re
+import tempfile
 from aiohttp import web
 from yarl import URL
 from conn import Connection, MissingColdcard
@@ -274,7 +276,102 @@ async def captcha_image(request):
 
     return web.Response(body=data, content_type='image/'+itype, 
         headers = {'Cache-Control': 'no-cache'})
-    
+
+async def sign_and_submit_psbt(psbt, expect_hash, send_immediately, finalize, wants_dl):
+    assert expect_hash == STATUS.psbt_hash, "hash mismatch"
+
+    if send_immediately:
+        assert finalize, "must finalize b4 send"
+
+    logging.info("Starting to sign...")
+    STATUS.busy_signing = True
+    STATUS.notify_watchers()
+
+    try:
+        dev = Connection()
+
+        # Write the PSBT to a temporary file
+        temp_psbt_file = tempfile.NamedTemporaryFile(delete=False)
+        with temp_psbt_file as f:
+            f.write(psbt)
+            f.flush()
+
+        # do auth steps first (no feedback given)
+        for pa, guess in zip(STATUS.pending_auth, STATUS._auth_guess):
+            if pa.name and guess:
+                await dev.user_auth(pa.name, guess, int(pa.totp), a2b_hex(STATUS.psbt_hash))
+
+        STATUS.reset_pending_auth()
+
+        try:
+            with open(temp_psbt_file.name, 'rb') as file:
+                file_content = file.read()
+            result = await dev.sign_psbt(file_content, finalize=finalize)
+
+            logging.info("Done signing")
+
+            msg = "Transaction signed."
+
+            if send_immediately:
+                msg += '<br><br>' + broadcast_txn(result)
+
+            result = (b2a_hex(result) if finalize else b64encode(result)).decode('ascii')
+            fname = 'transaction.txt' if finalize else ('signed-%s.psbt' % STATUS.psbt_hash[-6:])
+
+            return {
+                'message': msg,
+                'signed_result': result,
+                'filename': fname,
+                'is_b64': not finalize
+            }
+
+        except CCUserRefused:
+            logging.error("Coldcard refused to sign txn")
+            await dev.hsm_status()
+            r = STATUS.hsm.get('last_refusal', None)
+            if not r:
+                raise HTMLErrorMsg('Refused by local user.')
+            else:
+                raise HTMLErrorMsg(f"Rejected by Coldcard.<br><br>{r}")
+
+    finally:
+        os.remove(temp_psbt_file.name)  # Remove the temporary file
+        STATUS.busy_signing = False
+        STATUS.notify_watchers()
+
+@routes.post('/upload_psbt')
+async def upload_psbt(request):
+    data = await request.json()
+    psbt_base64 = data.get('psbt')
+    send_immediately = data.get('send_immediately', False)
+    finalize = data.get('finalize', False)
+    wants_download = data.get('wants_download', False)
+
+    if not psbt_base64:
+        return web.json_response({'error': 'PSBT not found'}, status=400)
+
+    try:
+        file_content = b64decode(psbt_base64)
+    except (binascii.Error, ValueError):
+        return web.json_response({'error': 'Invalid base64 PSBT'}, status=400)
+
+    file_hash = sha256(file_content).hexdigest()
+
+    STATUS.psbt_hash = file_hash
+
+    # Sign and submit PSBT
+    try:
+        submit_result = await sign_and_submit_psbt(file_content, file_hash, send_immediately, finalize, wants_download)
+    except HTMLErrorMsg as e:
+        return web.json_response({'error': str(e)}, status=400)
+
+    response_data = {
+        'size': len(file_content),
+        'hash': file_hash,
+        'content': psbt_base64,
+        **submit_result
+    }
+    return web.json_response(response_data)
 
 async def rx_handler(ses, ws, orig_request):
     # Block on receive, handle each message as it comes in.
