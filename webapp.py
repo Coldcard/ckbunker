@@ -362,6 +362,9 @@ async def upload_psbt(request):
     # Sign and submit PSBT
     try:
         submit_result = await sign_and_submit_psbt(file_content, file_hash, send_immediately, finalize, wants_download)
+    except RuntimeError as e:
+        logging.error("RuntimeError: %s", str(e))
+        return web.json_response({"error": str(e)}, status=400)
     except HTMLErrorMsg as e:
         return web.json_response({'error': str(e)}, status=400)
 
