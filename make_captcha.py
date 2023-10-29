@@ -34,7 +34,7 @@ class RansomCaptcha(CaptchaMaker):
     def draw(self, token, foreground='#000', seed=None):
         fn = self.get_font(size=40, which='ransom')
         w,h = self.size
-        dx,dy = fn.getsize('W')
+        _,_,dx,dy = fn.getbbox('W')
 
         im = Image.new('RGBA', self.size)
         dr = ImageDraw.Draw(im)
@@ -64,7 +64,7 @@ class MegaGifCaptcha(CaptchaMaker):
 
         fn = self.get_font(size=30, which='nova')
         w,h = self.size
-        dx,dy = fn.getsize('W')
+        _,_,dx,dy = fn.getbbox('W')
 
         randint = self.rng.randint
         sample = self.rng.sample
@@ -74,7 +74,7 @@ class MegaGifCaptcha(CaptchaMaker):
         frames = []
 
         ans_y = self.rng.randint(3, h-dy-3)
-        ans_w = fn.getsize(token)[0]
+        ans_w = fn.getbbox(token)[2]
         count = 15
 
         for fr_num in range(count):
