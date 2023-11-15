@@ -90,7 +90,7 @@ class MegaGifCaptcha(CaptchaMaker):
 
             for k in range(int(w * 1.5/dx)):
                 #ch = ''.join(self.rng.sample(TOKEN_CHARS, 1)).upper()
-                ch = ''.join(sample(charset, 1)).upper()
+                ch = ''.join(sample(list(charset), 1)).upper()
                 x = randint(-dx, w)
                 y = ans_y + randint(-dy*3/4, dy*3/4)
                 dr.text( (x,y), ch, fill=foreground, font=fn)

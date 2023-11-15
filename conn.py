@@ -268,9 +268,10 @@ class Connection(metaclass=Singleton):
         return await self.send_recv(CCProtocolPacker.get_storage_locker())
 
     async def sign_psbt(self, data, finalize=False, flags=0x0):
-        # upload it first
+        try:
+            if self.dev is None:
+                raise RuntimeError("Device not connected")
 
-        async with self.sign_lock:
             sz, chk = self.dev.upload_file(data)
             assert chk == a2b_hex(STATUS.psbt_hash)
 
@@ -278,6 +279,10 @@ class Connection(metaclass=Singleton):
 
             # wait for it to finish
             return await self.wait_and_download(CCProtocolPacker.get_signed_txn())
+
+        except AttributeError as e:
+            logging.error("AttributeError: %s", str(e))
+            raise RuntimeError("Device not connected")
 
     async def wait_and_download(self, req, fn=1):
         # Wait for user action (sic) on the device... by polling w/ indicated request
