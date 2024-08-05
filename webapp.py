@@ -376,6 +376,45 @@ async def upload_psbt(request):
     }
     return web.json_response(response_data)
 
+@routes.post('/sign_message')
+async def sign_message(request):
+    try:
+        data = await request.json()
+    except Exception as e:
+        logging.error(f"Failed to parse JSON: {str(e)}")
+        return web.json_response({'error': 'Invalid JSON'}, status=400)
+
+    msg_text = data.get('message')
+    path = data.get('path')
+    addr_fmt = data.get('addr_fmt', 'classic')
+
+    if not msg_text or not path:
+        return web.json_response({'error': 'Message and path are required'}, status=400)
+
+    addr_fmt = AF_P2WPKH if addr_fmt != 'classic' else AF_CLASSIC
+
+    try:
+        conn = Connection()
+        sig, addr = await conn.sign_text_msg(msg_text, path, addr_fmt)
+    except MissingColdcard:
+        logging.error("Coldcard device is missing or not connected")
+        return web.json_response({'error': 'Coldcard device is missing or not connected'}, status=500)
+    except asyncio.TimeoutError:
+        logging.error("Timeout error while communicating with Coldcard")
+        return web.json_response({'error': 'Timeout while communicating with Coldcard'}, status=500)
+    except Exception as e:
+        logging.error(f"Failed to sign message: {str(e)}")
+        return web.json_response({'error': 'Failed to sign message'}, status=400)
+
+    sig_encoded = b64encode(sig).decode('ascii').replace('\n', '')
+
+    response_data = {
+        'signed_message': sig_encoded,
+        'address': addr
+    }
+    return web.json_response(response_data)
+
+
 async def rx_handler(ses, ws, orig_request):
     # Block on receive, handle each message as it comes in.
     # see pp/aiohttp/client_ws.py
