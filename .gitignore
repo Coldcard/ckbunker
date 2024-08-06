@@ -12,3 +12,5 @@ pp
 history.yaml
 
 bunker.egg-info/
+
+.idea
