@@ -29,7 +29,7 @@ setup(
         'aiohttp-jinja2',
         'ckcc-protocol>=1.3.2',
         'pyyaml',
-        'pynacl==1.3.0',
+        'pynacl==1.6.2',
         'pendulum==2.0.3',
         'aiohttp_session',
         'requests[socks]',
