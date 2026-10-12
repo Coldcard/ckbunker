@@ -874,7 +874,8 @@ def startup(setup_mode):
         def log(self, request, response, time):
             self.logger.info(f'{response.status} <= {request.method} {request.path}')
 
-    return web._run_app(app, port=settings.PORT_NUMBER, print=None, access_log_class=AccessLogger)
+    return web._run_app(app, host=settings.BIND_ADDRESS, port=settings.PORT_NUMBER,
+                         print=None, access_log_class=AccessLogger)
 
 if __name__ == "__main__":
     from utils import setup_logging

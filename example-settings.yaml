@@ -6,3 +6,10 @@
 #   ckbunker run -c example-settings.yaml
 #
 PORT_NUMBER: 9800
+
+# Network interface the web server binds to (default: 127.0.0.1, localhost only).
+# This matches the documented behaviour of --local ("just be on localhost").
+# Only change this if you intentionally want the bunker reachable from the
+# network — note that --local / setup mode bypasses web authentication
+# completely, so exposing it is dangerous.
+# BIND_ADDRESS: 127.0.0.1

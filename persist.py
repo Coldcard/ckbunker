@@ -20,6 +20,15 @@ class Settings(metaclass=Singleton):
     # web server port 
     PORT_NUMBER = 9823
 
+    # network interface the web server binds to
+    # - default is localhost only, matching the documented behaviour of
+    #   --local ("just be on localhost") and docs/install.md
+    #   ("must be same machine", "remote connections ... disabled")
+    # - set to '0.0.0.0' (or a specific interface) only if you really
+    #   intend to expose the bunker on the network, and understand that
+    #   --local/setup mode bypasses web authentication completely
+    BIND_ADDRESS = '127.0.0.1'
+
     # session idle time, before we kick you out and require re-auth (seconds)
     MAX_IDLE_TIME = 10*60
 
