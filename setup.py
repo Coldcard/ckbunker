@@ -14,6 +14,21 @@ with open("README.md", "r") as fh:
 setup(
     name='bunker',
     version='0.1',
+    py_modules=[
+        "chain",
+        "chrono",
+        "conn",
+        "main",
+        "make_captcha",
+        "objstruct",
+        "persist",
+        "policy",
+        "status",
+        "torsion",
+        "utils",
+        "version",
+        "webapp",
+    ],
     license='MIT+CC',
     python_requires='>=3.7.0',
     url='https://github.com/Coldcard/ckbunker',
@@ -43,5 +58,4 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: MacOS :: MacOS X',
     ],
-    packages=[],
 )
