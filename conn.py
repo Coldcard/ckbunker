@@ -272,7 +272,7 @@ class Connection(metaclass=Singleton):
 
         async with self.sign_lock:
             sz, chk = self.dev.upload_file(data)
-            assert chk == a2b_hex(STATUS.psbt_hash)
+            assert chk == sha256(data).digest()
 
             await self.send_recv(CCProtocolPacker.sign_transaction(sz, chk, finalize, flags))
 

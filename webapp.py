@@ -560,7 +560,12 @@ async def ws_api_handler(ses, send_json, req, orig_request):     # handle_api
         # they want to sign it now
         expect_hash, send_immediately, finalize, wants_dl = args
 
-        assert expect_hash == STATUS.psbt_hash, "hash mismatch"
+        psbt = STATUS._pending_psbt
+        psbt_hash = STATUS.psbt_hash
+        pending_auth = [(pa.name, guess, pa.totp)
+                        for pa, guess in zip(STATUS.pending_auth, STATUS._auth_guess)]
+
+        assert expect_hash == psbt_hash, "hash mismatch"
         if send_immediately: assert finalize, "must finalize b4 send"
 
         logging.info("Starting to sign...")
@@ -571,14 +576,14 @@ async def ws_api_handler(ses, send_json, req, orig_request):     # handle_api
             dev = Connection()
 
             # do auth steps first (no feedback given)
-            for pa, guess in zip(STATUS.pending_auth, STATUS._auth_guess):
-                if pa.name and guess:
-                    await dev.user_auth(pa.name, guess, int(pa.totp), a2b_hex(STATUS.psbt_hash))
+            for name, guess, totp in pending_auth:
+                if name and guess:
+                    await dev.user_auth(name, guess, int(totp), a2b_hex(psbt_hash))
 
             STATUS.reset_pending_auth()
 
             try:
-                result = await dev.sign_psbt(STATUS._pending_psbt, finalize=finalize)
+                result = await dev.sign_psbt(psbt, finalize=finalize)
                 logging.info("Done signing")
 
                 msg = "Transaction signed."
@@ -589,7 +594,7 @@ async def ws_api_handler(ses, send_json, req, orig_request):     # handle_api
                 await send_json(show_modal=True, html=Markup(msg), selector='.js-api-success')
 
                 result = (b2a_hex(result) if finalize else b64encode(result)).decode('ascii')
-                fname = 'transaction.txt' if finalize else ('signed-%s.psbt'%STATUS.psbt_hash[-6:])
+                fname = 'transaction.txt' if finalize else ('signed-%s.psbt'%psbt_hash[-6:])
 
                 if wants_dl:
                     await send_json(local_download=dict(data=result, filename=fname,

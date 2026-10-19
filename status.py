@@ -86,6 +86,9 @@ class SystemStatus(WatchableMixin, ObjectStruct):
         self.local_code = None
         self.psbt_preview = None
 
+        # Credentials entered for one transaction must not survive a replacement.
+        self.reset_pending_auth()
+
     def import_psbt(self, psbt):
         from ckcc.utils import calc_local_pincode
         from utils import cleanup_psbt
