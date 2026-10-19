@@ -65,3 +65,7 @@ Learn more about the [Coldcard in HSM Mode](https://coldcardwallet.com/docs/ckbu
 ## Quotes
 
 > "Basically the cost of a Bitcoin HSM with custom policies is now the cost of a coldcard and you don't need a thirty party to maintain it." - Francis P.
+
+## Credits
+
+- [elieve-dev](https://github.com/elieve-dev) — [PR #37](https://github.com/Coldcard/ckbunker/pull/37): bind the web server to localhost by default (configurable via `BIND_ADDRESS`). Previously, the web UI bound to all network interfaces in `--local`/setup mode, exposing HSM signing functions to the network without authentication.
